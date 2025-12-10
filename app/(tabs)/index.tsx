@@ -1,3 +1,5 @@
+import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -15,6 +17,7 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { user, isFavorite, addToFavorites, removeFromFavorites } = useUser();
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   // Dynamic restaurant data
@@ -117,7 +120,7 @@ export default function HomeScreen() {
         <Text style={styles.headerTitle}>SWATO</Text>
         <TouchableOpacity style={styles.profileIcon} onPress={() => router.push('/(tabs)/explore')}>
           <View style={styles.profileCircle}>
-            <Text style={styles.profileText}>U</Text>
+            <Text style={styles.profileText}>{user?.name?.charAt(0).toUpperCase() || 'U'}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -230,8 +233,29 @@ export default function HomeScreen() {
                   <Text style={styles.restaurantOffer}>{restaurant.offer}</Text>
                 </View>
                 <View style={styles.vegBadge}>
-                  <View style={[styles.vegBadgeDot, restaurant.isVeg ? styles.vegGreen : styles.vegRed]} />
+                  <Ionicons 
+                    name="radio-button-on" 
+                    size={16} 
+                    color={restaurant.isVeg ? '#10B981' : '#EF4444'} 
+                  />
                 </View>
+                <TouchableOpacity
+                  style={styles.favoriteButton}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    if (isFavorite(restaurant.id)) {
+                      removeFromFavorites(restaurant.id);
+                    } else {
+                      addToFavorites(restaurant.id);
+                    }
+                  }}
+                >
+                  <Ionicons 
+                    name={isFavorite(restaurant.id) ? 'heart' : 'heart-outline'} 
+                    size={18} 
+                    color={isFavorite(restaurant.id) ? '#EF4444' : '#FFFFFF'} 
+                  />
+                </TouchableOpacity>
                 <View style={styles.restaurantDetails}>
                   <Text style={styles.restaurantName} numberOfLines={1}>{restaurant.name}</Text>
                   <View style={styles.restaurantInfo}>
@@ -282,8 +306,32 @@ export default function HomeScreen() {
                 <View style={styles.fullRestaurantOverlay}>
                   <Text style={styles.fullRestaurantOffer}>{restaurant.offer}</Text>
                 </View>
+                <TouchableOpacity
+                  style={styles.fullRestaurantFavorite}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    if (isFavorite(restaurant.id)) {
+                      removeFromFavorites(restaurant.id);
+                    } else {
+                      addToFavorites(restaurant.id);
+                    }
+                  }}
+                >
+                  <Ionicons 
+                    name={isFavorite(restaurant.id) ? 'heart' : 'heart-outline'} 
+                    size={16} 
+                    color={isFavorite(restaurant.id) ? '#EF4444' : '#FFFFFF'} 
+                  />
+                </TouchableOpacity>
                 <View style={styles.fullRestaurantInfo}>
-                  <Text style={styles.fullRestaurantName}>{restaurant.name}</Text>
+                  <View style={styles.fullRestaurantHeader}>
+                    <Text style={styles.fullRestaurantName}>{restaurant.name}</Text>
+                    <Ionicons 
+                      name="radio-button-on" 
+                      size={14} 
+                      color={restaurant.isVeg ? '#10B981' : '#EF4444'} 
+                    />
+                  </View>
                   <View style={styles.restaurantMeta}>
                     <View style={styles.ratingBadge}>
                       <Text style={styles.ratingText}>★ {restaurant.rating}</Text>
@@ -303,7 +351,7 @@ export default function HomeScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Made with ❤️ for Delhi</Text>
+          <Text style={styles.footerText}>Made with love for Delhi</Text>
         </View>
       </ScrollView>
     </View>
@@ -677,11 +725,22 @@ const styles = StyleSheet.create({
   vegBadge: {
     position: 'absolute',
     top: 8,
-    right: 8,
+    left: 8,
     width: 24,
     height: 24,
     borderRadius: 4,
     backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -759,6 +818,17 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
   },
+  fullRestaurantFavorite: {
+    position: 'absolute',
+    top: 8,
+    left: width * 0.32 - 40,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   fullRestaurantOffer: {
     color: '#FFFFFF',
     fontSize: 10,
@@ -769,11 +839,17 @@ const styles = StyleSheet.create({
     padding: 12,
     justifyContent: 'center',
   },
+  fullRestaurantHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
   fullRestaurantName: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1A1A1A',
-    marginBottom: 4,
+    flex: 1,
   },
   restaurantMeta: {
     flexDirection: 'row',

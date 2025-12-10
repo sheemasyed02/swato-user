@@ -1,24 +1,27 @@
+import { useUser } from '@/contexts/UserContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function NameScreen() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const { setUser, user } = useUser();
+  const [name, setName] = useState(user?.name || '');
   const [isFocused, setIsFocused] = useState(false);
 
   const handleContinue = () => {
     if (name.trim().length >= 2) {
+      setUser({ name: name.trim(), phone: user?.phone || '', location: user?.location });
       router.push('/auth/location' as any);
     }
   };

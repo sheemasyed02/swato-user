@@ -1,3 +1,4 @@
+import { useUser } from '@/contexts/UserContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -14,13 +15,15 @@ import {
 
 export default function PhoneScreen() {
   const router = useRouter();
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const { updateUser, user } = useUser();
+  const [phoneNumber, setPhoneNumber] = useState(user?.phone?.replace('+91 ', '') || '');
   const [countryCode, setCountryCode] = useState('+91');
   const [isFocused, setIsFocused] = useState(false);
   const phoneInputRef = React.useRef<TextInput>(null);
 
   const handleContinue = () => {
     if (phoneNumber.length >= 10) {
+      updateUser({ phone: `+91 ${phoneNumber}` });
       router.push('/auth/otp' as any);
     }
   };
@@ -58,7 +61,7 @@ export default function PhoneScreen() {
               isFocused && styles.phoneInputWrapperFocused
             ]}>
               <View style={styles.countryCodeSection}>
-                <Text style={styles.flag}>🇮🇳</Text>
+                <Text style={styles.countryText}>IND</Text>
                 <Text style={styles.countryCode}>{countryCode}</Text>
                 <View style={styles.divider} />
               </View>
@@ -168,9 +171,12 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 8,
   },
-  flag: {
-    fontSize: 24,
+  countryText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FF6B35',
     marginRight: 6,
+    letterSpacing: 0.5,
   },
   countryCode: {
     fontSize: 16,

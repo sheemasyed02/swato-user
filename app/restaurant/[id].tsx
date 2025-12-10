@@ -1,3 +1,5 @@
+import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -13,7 +15,12 @@ import {
 export default function RestaurantDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const { isFavorite, addToFavorites, removeFromFavorites, isItemFavorite, addItemToFavorites, removeItemFromFavorites, getFavoriteItemsByRestaurant } = useUser();
   const [selectedCategory, setSelectedCategory] = useState('Recommended');
+  
+  const restaurantId = parseInt(id as string);
+  const isRestaurantFavorite = isFavorite(restaurantId);
+  const restaurantFavoriteItems = getFavoriteItemsByRestaurant(restaurantId);
 
   // Mock restaurant data
   const restaurant = {
@@ -67,19 +74,52 @@ export default function RestaurantDetailScreen() {
     },
   ];
 
+  const handleToggleRestaurantFavorite = () => {
+    if (isRestaurantFavorite) {
+      removeFromFavorites(restaurantId);
+    } else {
+      addToFavorites(restaurantId);
+    }
+  };
+
+  const handleToggleItemFavorite = (item: typeof menuItems[0]) => {
+    if (isItemFavorite(restaurantId, item.id)) {
+      removeItemFromFavorites(restaurantId, item.id);
+    } else {
+      addItemToFavorites({
+        id: item.id,
+        restaurantId: restaurantId,
+        restaurantName: restaurant.name,
+        itemName: item.name,
+        description: item.description,
+        price: item.price,
+        isVeg: item.isVeg,
+        image: item.image,
+        rating: item.rating,
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Header with Back Button */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#1A1A1A" />
         </TouchableOpacity>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Text style={styles.iconText}>🔍</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/search')}>
+            <Ionicons name="search" size={22} color="#1A1A1A" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Text style={styles.iconText}>❤️</Text>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={handleToggleRestaurantFavorite}
+          >
+            <Ionicons 
+              name={isRestaurantFavorite ? 'heart' : 'heart-outline'} 
+              size={22} 
+              color={isRestaurantFavorite ? '#EF4444' : '#666'} 
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -102,6 +142,19 @@ export default function RestaurantDetailScreen() {
           <View style={styles.deliveryInfo}>
             <Text style={styles.deliveryText}>🚴 Free delivery on orders above ₹199</Text>
           </View>
+          
+          {/* View Favorites Button */}
+          {restaurantFavoriteItems.length > 0 && (
+            <TouchableOpacity
+              style={styles.viewFavoritesButton}
+              onPress={() => router.push(`/restaurant-favorites/${restaurantId}` as any)}
+            >
+              <Ionicons name="heart" size={18} color="#EF4444" />
+              <Text style={styles.viewFavoritesText}>
+                View {restaurantFavoriteItems.length} Favorite Item{restaurantFavoriteItems.length > 1 ? 's' : ''}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Category Tabs */}
@@ -139,10 +192,26 @@ export default function RestaurantDetailScreen() {
             <View key={item.id} style={styles.menuItem}>
               <View style={styles.menuItemInfo}>
                 <View style={styles.vegIndicator}>
-                  <View style={[styles.vegDot, item.isVeg ? styles.vegDotGreen : styles.vegDotRed]} />
+                  <Ionicons 
+                    name="radio-button-on" 
+                    size={16} 
+                    color={item.isVeg ? '#10B981' : '#EF4444'} 
+                  />
                 </View>
                 <View style={styles.menuItemDetails}>
-                  <Text style={styles.menuItemName}>{item.name}</Text>
+                  <View style={styles.itemNameRow}>
+                    <Text style={styles.menuItemName}>{item.name}</Text>
+                    <TouchableOpacity
+                      style={styles.itemHeartButton}
+                      onPress={() => handleToggleItemFavorite(item)}
+                    >
+                      <Ionicons 
+                        name={isItemFavorite(restaurantId, item.id) ? 'heart' : 'heart-outline'} 
+                        size={18} 
+                        color={isItemFavorite(restaurantId, item.id) ? '#EF4444' : '#CCCCCC'} 
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <Text style={styles.menuItemDescription}>{item.description}</Text>
                   <Text style={styles.menuItemPrice}>₹{item.price}</Text>
                   <View style={styles.itemRating}>
@@ -186,10 +255,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  backText: {
-    fontSize: 28,
-    color: '#1A1A1A',
-  },
   headerActions: {
     flexDirection: 'row',
     gap: 8,
@@ -199,9 +264,8 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  iconText: {
-    fontSize: 20,
+    borderRadius: 20,
+    backgroundColor: '#F5F5F5',
   },
   content: {
     flex: 1,
@@ -258,6 +322,21 @@ const styles = StyleSheet.create({
     color: '#FF6B35',
     fontWeight: '600',
   },
+  viewFavoritesButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FEE2E2',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    gap: 8,
+  },
+  viewFavoritesText: {
+    fontSize: 14,
+    color: '#EF4444',
+    fontWeight: 'bold',
+  },
   categoryTabs: {
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
@@ -308,32 +387,28 @@ const styles = StyleSheet.create({
   vegIndicator: {
     width: 20,
     height: 20,
-    borderWidth: 2,
-    borderColor: '#22C55E',
-    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
-  },
-  vegDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  vegDotGreen: {
-    backgroundColor: '#22C55E',
-  },
-  vegDotRed: {
-    backgroundColor: '#EF4444',
+    marginTop: 2,
   },
   menuItemDetails: {
     flex: 1,
+  },
+  itemNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
   menuItemName: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1A1A1A',
-    marginBottom: 4,
+    flex: 1,
+  },
+  itemHeartButton: {
+    padding: 4,
   },
   menuItemDescription: {
     fontSize: 13,

@@ -1,3 +1,5 @@
+import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -11,7 +13,14 @@ import {
 
 export default function AccountScreen() {
   const router = useRouter();
-  const customerName = 'Sheema Syed'; // This should come from user data/state
+  const { user, resetUserData } = useUser();
+  const customerName = user?.name || 'User';
+  const customerPhone = user?.phone || '+91 XXXXXXXXXX';
+
+  const handleLogout = () => {
+    resetUserData();
+    router.replace('/auth/splash' as any);
+  };
 
   return (
     <View style={styles.container}>
@@ -24,13 +33,16 @@ export default function AccountScreen() {
         {/* Profile Section */}
         <View style={styles.profileSection}>
           <View style={styles.profileCircle}>
-            <Text style={styles.profileText}>{customerName.charAt(0)}</Text>
+            <Text style={styles.profileText}>{customerName.charAt(0).toUpperCase()}</Text>
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{customerName}</Text>
-            <Text style={styles.profilePhone}>+91 8309691054</Text>
+            <Text style={styles.profilePhone}>{customerPhone}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton}>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={() => router.push('/edit-profile' as any)}
+          >
             <Text style={styles.editText}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -39,76 +51,62 @@ export default function AccountScreen() {
         <View style={styles.menuSection}>
           <Text style={styles.menuHeader}>Food Orders</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/orders')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.orderIcon}>
-                <View style={styles.orderIconBox} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconOrderBg]}>
+              <Ionicons name="receipt-outline" size={22} color="#FF6B35" />
             </View>
             <Text style={styles.menuText}>Your orders</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/favorites')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.favoriteIcon}>
-                <View style={styles.heartShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconFavoriteBg]}>
+              <Ionicons name="heart" size={22} color="#EF4444" />
             </View>
             <Text style={styles.menuText}>Favorite</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.menuSection}>
           <Text style={styles.menuHeader}>More</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/payments')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.paymentIcon}>
-                <View style={styles.cardShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconPaymentBg]}>
+              <Ionicons name="card-outline" size={22} color="#3B82F6" />
             </View>
             <Text style={styles.menuText}>Payments & Refunds</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/addresses')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.addressIcon}>
-                <View style={styles.pinShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconAddressBg]}>
+              <Ionicons name="location-outline" size={22} color="#FF6B35" />
             </View>
             <Text style={styles.menuText}>Addresses</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.settingsIcon}>
-                <View style={styles.gearShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconSettingsBg]}>
+              <Ionicons name="settings-outline" size={22} color="#6B7280" />
             </View>
             <Text style={styles.menuText}>Settings</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/feedback')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.feedbackIcon}>
-                <View style={styles.starShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconFeedbackBg]}>
+              <Ionicons name="star" size={22} color="#F59E0B" />
             </View>
             <Text style={styles.menuText}>Feedback</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/help')}>
-            <View style={styles.menuIconContainer}>
-              <View style={styles.helpIcon}>
-                <View style={styles.questionShape} />
-              </View>
+            <View style={[styles.iconContainer, styles.iconHelpBg]}>
+              <Ionicons name="help-circle-outline" size={22} color="#10B981" />
             </View>
             <Text style={styles.menuText}>Help</Text>
-            <Text style={styles.arrow}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
 
         {/* Logout */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
@@ -220,10 +218,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 2,
   },
-  arrow: {
-    fontSize: 24,
-    color: '#999',
-  },
   menuSection: {
     backgroundColor: '#FFFFFF',
     marginBottom: 12,
@@ -243,7 +237,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  menuIconContainer: {
+  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -251,107 +245,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
-  orderIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconOrderBg: {
     backgroundColor: '#FFE8DC',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  orderIconBox: {
-    width: 18,
-    height: 18,
-    borderWidth: 2,
-    borderColor: '#FF6B35',
-    borderRadius: 4,
-  },
-  favoriteIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconFavoriteBg: {
     backgroundColor: '#FEE2E2',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  heartShape: {
-    width: 18,
-    height: 18,
-    backgroundColor: '#EF4444',
-    borderRadius: 9,
-    transform: [{ rotate: '45deg' }],
-  },
-  paymentIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconPaymentBg: {
     backgroundColor: '#DBEAFE',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  cardShape: {
-    width: 20,
-    height: 14,
-    backgroundColor: '#3B82F6',
-    borderRadius: 3,
-  },
-  addressIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconAddressBg: {
     backgroundColor: '#FFE8DC',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  pinShape: {
-    width: 14,
-    height: 14,
-    backgroundColor: '#FF6B35',
-    borderRadius: 7,
+  iconSettingsBg: {
+    backgroundColor: '#F3F4F6',
   },
-  settingsIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#E5E7EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  gearShape: {
-    width: 18,
-    height: 18,
-    backgroundColor: '#6B7280',
-    borderRadius: 9,
-  },
-  feedbackIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconFeedbackBg: {
     backgroundColor: '#FEF3C7',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  starShape: {
-    width: 18,
-    height: 18,
-    backgroundColor: '#F59E0B',
-    borderRadius: 3,
-    transform: [{ rotate: '45deg' }],
-  },
-  helpIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  iconHelpBg: {
     backgroundColor: '#D1FAE5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  questionShape: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 2,
-    borderColor: '#10B981',
   },
   menuText: {
     flex: 1,
