@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import {
     Dimensions,
     Image,
+    Modal,
     Platform,
     ScrollView,
     StyleSheet,
@@ -17,8 +18,11 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { user, isFavorite, addToFavorites, removeFromFavorites } = useUser();
+  const { user, isItemFavorite, addItemToFavorites, removeItemFromFavorites } = useUser();
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const [vegFilterModal, setVegFilterModal] = useState(false);
+  const [vegFilter, setVegFilter] = useState<'all' | 'veg'>('all');
+  const [rememberChoice, setRememberChoice] = useState(false);
 
   // Dynamic restaurant data
   const restaurants = [
@@ -113,6 +117,107 @@ export default function HomeScreen() {
     { id: 3, title: 'Meals', subtitle: 'At ₹99', icon: '99', color: '#FF6B35' },
   ];
 
+  // Popular food items across restaurants
+  const foodItems = [
+    {
+      id: 101,
+      restaurantId: 1,
+      restaurantName: 'Delhi Darbar Restaurant',
+      name: 'Chicken Biryani',
+      description: 'Aromatic basmati rice with tender chicken',
+      price: 249,
+      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400',
+      isVeg: false,
+      rating: 4.5,
+    },
+    {
+      id: 102,
+      restaurantId: 2,
+      restaurantName: 'Wow! Momo',
+      name: 'Veg Steamed Momos',
+      description: 'Fresh vegetables wrapped in soft dumplings',
+      price: 129,
+      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400',
+      isVeg: true,
+      rating: 4.4,
+    },
+    {
+      id: 103,
+      restaurantId: 3,
+      restaurantName: 'Pizza Paradise',
+      name: 'Margherita Pizza',
+      description: 'Classic Italian pizza with fresh mozzarella',
+      price: 299,
+      image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400',
+      isVeg: true,
+      rating: 4.6,
+    },
+    {
+      id: 104,
+      restaurantId: 1,
+      restaurantName: 'Delhi Darbar Restaurant',
+      name: 'Paneer Butter Masala',
+      description: 'Cottage cheese in rich creamy tomato gravy',
+      price: 219,
+      image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400',
+      isVeg: true,
+      rating: 4.3,
+    },
+    {
+      id: 105,
+      restaurantId: 6,
+      restaurantName: 'Noodle House',
+      name: 'Hakka Noodles',
+      description: 'Stir-fried noodles with vegetables',
+      price: 179,
+      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=400',
+      isVeg: true,
+      rating: 4.2,
+    },
+    {
+      id: 106,
+      restaurantId: 5,
+      restaurantName: 'Sweet Cravings Bakery',
+      name: 'Chocolate Cake',
+      description: 'Rich chocolate cake with ganache',
+      price: 349,
+      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
+      isVeg: true,
+      rating: 4.7,
+    },
+  ];
+
+  // Filter items based on veg filter
+  const filteredFoodItems = vegFilter === 'veg' 
+    ? foodItems.filter(item => item.isVeg) 
+    : foodItems;
+
+  const filteredRestaurants = vegFilter === 'veg'
+    ? restaurants.filter(r => r.isVeg)
+    : restaurants;
+
+  const handleVegFilterApply = () => {
+    setVegFilterModal(false);
+  };
+
+  const toggleItemFavorite = (item: typeof foodItems[0]) => {
+    if (isItemFavorite(item.restaurantId, item.id)) {
+      removeItemFromFavorites(item.restaurantId, item.id);
+    } else {
+      addItemToFavorites({
+        id: item.id,
+        restaurantId: item.restaurantId,
+        restaurantName: item.restaurantName,
+        itemName: item.name,
+        description: item.description,
+        price: item.price,
+        image: item.image,
+        isVeg: item.isVeg,
+        rating: item.rating,
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Header with Account Button */}
@@ -153,7 +258,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.vegFilterButton}
-          onPress={() => router.push('/veg-filter')}
+          onPress={() => setVegFilterModal(true)}
         >
           <View style={styles.vegLeafIcon}>
             <View style={styles.leafStem} />
@@ -161,6 +266,78 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
       </View>
+
+      {/* Veg Filter Modal */}
+      <Modal
+        visible={vegFilterModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setVegFilterModal(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1}
+          onPress={() => setVegFilterModal(false)}
+        >
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+            <TouchableOpacity 
+              style={styles.modalClose}
+              onPress={() => setVegFilterModal(false)}
+            >
+              <Ionicons name="close" size={24} color="#999" />
+            </TouchableOpacity>
+            
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>I want to see veg choices from</Text>
+              <Image 
+                source={{ uri: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200' }}
+                style={styles.modalImage}
+              />
+            </View>
+
+            <View style={styles.radioGroup}>
+              <TouchableOpacity 
+                style={styles.radioOption}
+                onPress={() => setVegFilter('all')}
+              >
+                <Text style={styles.radioLabel}>All restaurants</Text>
+                <View style={styles.radioButton}>
+                  {vegFilter === 'all' && <View style={styles.radioButtonSelected} />}
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.radioOption}
+                onPress={() => setVegFilter('veg')}
+              >
+                <Text style={styles.radioLabel}>Pure veg restaurants only</Text>
+                <View style={styles.radioButton}>
+                  {vegFilter === 'veg' && <View style={styles.radioButtonSelected} />}
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.divider} />
+
+            <TouchableOpacity 
+              style={styles.checkboxOption}
+              onPress={() => setRememberChoice(!rememberChoice)}
+            >
+              <Text style={styles.checkboxLabel}>Remember my choice going forward</Text>
+              <View style={styles.checkbox}>
+                {rememberChoice && <Ionicons name="checkmark" size={16} color="#10B981" />}
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.applyButton}
+              onPress={handleVegFilterApply}
+            >
+              <Text style={styles.applyButtonText}>Show restaurants</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Banner */}
@@ -222,7 +399,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.restaurantList}>
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <TouchableOpacity
                 key={restaurant.id}
                 style={styles.restaurantCard}
@@ -239,23 +416,6 @@ export default function HomeScreen() {
                     color={restaurant.isVeg ? '#10B981' : '#EF4444'} 
                   />
                 </View>
-                <TouchableOpacity
-                  style={styles.favoriteButton}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    if (isFavorite(restaurant.id)) {
-                      removeFromFavorites(restaurant.id);
-                    } else {
-                      addToFavorites(restaurant.id);
-                    }
-                  }}
-                >
-                  <Ionicons 
-                    name={isFavorite(restaurant.id) ? 'heart' : 'heart-outline'} 
-                    size={18} 
-                    color={isFavorite(restaurant.id) ? '#EF4444' : '#FFFFFF'} 
-                  />
-                </TouchableOpacity>
                 <View style={styles.restaurantDetails}>
                   <Text style={styles.restaurantName} numberOfLines={1}>{restaurant.name}</Text>
                   <View style={styles.restaurantInfo}>
@@ -265,6 +425,57 @@ export default function HomeScreen() {
                     <Text style={styles.deliveryTime}>• {restaurant.deliveryTime}</Text>
                   </View>
                   <Text style={styles.cuisine} numberOfLines={1}>{restaurant.cuisine}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Popular Items Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Popular items</Text>
+            <TouchableOpacity onPress={() => router.push('/favorites')}>
+              <Text style={styles.seeAll}>View favorites →</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.foodItemsList}>
+            {filteredFoodItems.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.foodItemCard}
+                onPress={() => router.push(`/restaurant/${item.restaurantId}` as any)}
+              >
+                <Image source={{ uri: item.image }} style={styles.foodItemImage} />
+                <View style={styles.foodItemVegBadge}>
+                  <Ionicons 
+                    name="radio-button-on" 
+                    size={14} 
+                    color={item.isVeg ? '#10B981' : '#EF4444'} 
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.foodItemHeartButton}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    toggleItemFavorite(item);
+                  }}
+                >
+                  <Ionicons 
+                    name={isItemFavorite(item.restaurantId, item.id) ? 'heart' : 'heart-outline'} 
+                    size={18} 
+                    color={isItemFavorite(item.restaurantId, item.id) ? '#EF4444' : '#FFFFFF'} 
+                  />
+                </TouchableOpacity>
+                <View style={styles.foodItemDetails}>
+                  <Text style={styles.foodItemName} numberOfLines={1}>{item.name}</Text>
+                  <Text style={styles.foodItemRestaurant} numberOfLines={1}>{item.restaurantName}</Text>
+                  <View style={styles.foodItemFooter}>
+                    <Text style={styles.foodItemPrice}>₹{item.price}</Text>
+                    <View style={styles.foodItemRating}>
+                      <Text style={styles.foodItemRatingText}>★ {item.rating}</Text>
+                    </View>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
@@ -296,7 +507,7 @@ export default function HomeScreen() {
             </View>
           </View>
           <View style={styles.allRestaurants}>
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <TouchableOpacity
                 key={`all-${restaurant.id}`}
                 style={styles.fullRestaurantCard}
@@ -306,23 +517,6 @@ export default function HomeScreen() {
                 <View style={styles.fullRestaurantOverlay}>
                   <Text style={styles.fullRestaurantOffer}>{restaurant.offer}</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.fullRestaurantFavorite}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    if (isFavorite(restaurant.id)) {
-                      removeFromFavorites(restaurant.id);
-                    } else {
-                      addToFavorites(restaurant.id);
-                    }
-                  }}
-                >
-                  <Ionicons 
-                    name={isFavorite(restaurant.id) ? 'heart' : 'heart-outline'} 
-                    size={16} 
-                    color={isFavorite(restaurant.id) ? '#EF4444' : '#FFFFFF'} 
-                  />
-                </TouchableOpacity>
                 <View style={styles.fullRestaurantInfo}>
                   <View style={styles.fullRestaurantHeader}>
                     <Text style={styles.fullRestaurantName}>{restaurant.name}</Text>
@@ -891,5 +1085,182 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: '#999',
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    position: 'relative',
+  },
+  modalClose: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 1,
+    padding: 4,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    flex: 1,
+    paddingRight: 12,
+  },
+  modalImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+  },
+  radioGroup: {
+    marginBottom: 20,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+  },
+  radioLabel: {
+    fontSize: 16,
+    color: '#1A1A1A',
+  },
+  radioButton: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: '#10B981',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  radioButtonSelected: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#10B981',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E5E5',
+    marginVertical: 16,
+  },
+  checkboxOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    color: '#666',
+    flex: 1,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#E5E5E5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  applyButton: {
+    backgroundColor: '#10B981',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  applyButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  // Food items styles
+  foodItemsList: {
+    paddingHorizontal: 16,
+  },
+  foodItemCard: {
+    width: 180,
+    marginRight: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  foodItemImage: {
+    width: '100%',
+    height: 140,
+    backgroundColor: '#F5F5F5',
+  },
+  foodItemVegBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    padding: 4,
+  },
+  foodItemHeartButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 20,
+    padding: 6,
+  },
+  foodItemDetails: {
+    padding: 12,
+  },
+  foodItemName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+  foodItemRestaurant: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+  },
+  foodItemFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  foodItemPrice: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+  },
+  foodItemRating: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  foodItemRatingText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });

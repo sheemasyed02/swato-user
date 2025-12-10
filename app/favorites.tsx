@@ -14,67 +14,7 @@ import {
 
 export default function FavoritesScreen() {
   const router = useRouter();
-  const { favorites: favoriteIds, removeFromFavorites } = useUser();
-
-  // Mock restaurant data - in production, fetch based on favoriteIds
-  const allRestaurants = [
-    {
-      id: 1,
-      name: 'Delhi Darbar Restaurant',
-      cuisine: 'North Indian, Biryani',
-      rating: 4.3,
-      deliveryTime: '25-30 mins',
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400',
-      isVeg: false,
-    },
-    {
-      id: 2,
-      name: 'Wow! Momo',
-      cuisine: 'Chinese, Tibetan, Momos',
-      rating: 4.4,
-      deliveryTime: '20-25 mins',
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400',
-      isVeg: true,
-    },
-    {
-      id: 3,
-      name: 'Pizza Paradise',
-      cuisine: 'Italian, Pizza, Pasta',
-      rating: 4.2,
-      deliveryTime: '30-35 mins',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400',
-      isVeg: true,
-    },
-    {
-      id: 4,
-      name: 'The Juice Bar',
-      cuisine: 'Fresh Juices, Smoothies',
-      rating: 4.5,
-      deliveryTime: '15-20 mins',
-      image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400',
-      isVeg: true,
-    },
-    {
-      id: 5,
-      name: 'Sweet Cravings Bakery',
-      cuisine: 'Cakes, Pastries, Desserts',
-      rating: 4.6,
-      deliveryTime: '20-25 mins',
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
-      isVeg: true,
-    },
-    {
-      id: 6,
-      name: 'Noodle House',
-      cuisine: 'Chinese Noodles, Asian',
-      rating: 4.1,
-      deliveryTime: '25-30 mins',
-      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=400',
-      isVeg: true,
-    },
-  ];
-
-  const favoriteRestaurants = allRestaurants.filter(r => favoriteIds.includes(r.id));
+  const { favoriteItems, removeItemFromFavorites } = useUser();
 
   return (
     <View style={styles.container}>
@@ -88,41 +28,51 @@ export default function FavoritesScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {favoriteRestaurants.length === 0 ? (
+        {favoriteItems.length === 0 ? (
           <View style={styles.emptyState}>
             <Ionicons name="heart-outline" size={60} color="#CCCCCC" />
-            <Text style={styles.emptyText}>No favorites yet</Text>
-            <Text style={styles.emptySubtext}>Save your favorite restaurants here</Text>
+            <Text style={styles.emptyText}>No favorite items yet</Text>
+            <Text style={styles.emptySubtext}>Save your favorite food items here</Text>
             <TouchableOpacity 
               style={styles.browseButton}
               onPress={() => router.back()}
             >
-              <Text style={styles.browseButtonText}>Browse Restaurants</Text>
+              <Text style={styles.browseButtonText}>Browse Menu</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          favoriteRestaurants.map((item) => (
+          favoriteItems.map((item) => (
             <TouchableOpacity
-              key={item.id}
+              key={`${item.restaurantId}-${item.id}`}
               style={styles.favoriteCard}
-              onPress={() => router.push(`/restaurant/${item.id}` as any)}
+              onPress={() => router.push(`/restaurant/${item.restaurantId}` as any)}
             >
               <Image source={{ uri: item.image }} style={styles.favoriteImage} />
               <View style={styles.favoriteInfo}>
-                <Text style={styles.favoriteName}>{item.name}</Text>
-                <Text style={styles.favoriteCuisine}>{item.cuisine}</Text>
+                <View style={styles.favoriteHeader}>
+                  <Ionicons 
+                    name="radio-button-on" 
+                    size={14} 
+                    color={item.isVeg ? '#10B981' : '#EF4444'} 
+                  />
+                  <Text style={styles.favoriteName}>{item.itemName}</Text>
+                </View>
+                <Text style={styles.favoriteRestaurant}>{item.restaurantName}</Text>
+                <Text style={styles.favoriteDescription} numberOfLines={2}>{item.description}</Text>
                 <View style={styles.favoriteMetaInfo}>
-                  <View style={styles.ratingBadge}>
-                    <Text style={styles.ratingText}>★ {item.rating}</Text>
-                  </View>
-                  <Text style={styles.deliveryTime}>• {item.deliveryTime}</Text>
+                  <Text style={styles.favoritePrice}>₹{item.price}</Text>
+                  {item.rating && (
+                    <View style={styles.ratingBadge}>
+                      <Text style={styles.ratingText}>★ {item.rating}</Text>
+                    </View>
+                  )}
                 </View>
               </View>
               <TouchableOpacity 
                 style={styles.heartButton}
                 onPress={(e) => {
                   e.stopPropagation();
-                  removeFromFavorites(item.id);
+                  removeItemFromFavorites(item.restaurantId, item.id);
                 }}
               >
                 <Ionicons name="heart" size={20} color="#EF4444" />
@@ -202,45 +152,62 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 12,
     overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   favoriteImage: {
     width: 100,
-    height: 100,
+    height: 120,
   },
   favoriteInfo: {
     flex: 1,
     padding: 12,
   },
+  favoriteHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
   favoriteName: {
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    flex: 1,
+  },
+  favoriteRestaurant: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  favoriteDescription: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 8,
+  },
+  favoritePrice: {
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#1A1A1A',
-  },
-  favoriteCuisine: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 4,
+    marginRight: 8,
   },
   favoriteMetaInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
   },
   ratingBadge: {
-    backgroundColor: '#22C55E',
+    backgroundColor: '#10B981',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   ratingText: {
     color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  deliveryTime: {
-    fontSize: 13,
-    color: '#666',
-    marginLeft: 4,
+    fontSize: 11,
+    fontWeight: '600',
   },
   heartButton: {
     position: 'absolute',
