@@ -52,15 +52,52 @@ export default function HomeScreen() {
       offer: 'FLAT ₹150 OFF',
       isVeg: true,
     },
+    {
+      id: 4,
+      name: 'The Juice Bar',
+      cuisine: 'Fresh Juices, Smoothies',
+      rating: 4.5,
+      deliveryTime: '15-20 mins',
+      distance: '1.2 km',
+      image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=800',
+      offer: 'BUY 2 GET 1 FREE',
+      isVeg: true,
+    },
+    {
+      id: 5,
+      name: 'Sweet Cravings Bakery',
+      cuisine: 'Cakes, Pastries, Desserts',
+      rating: 4.6,
+      deliveryTime: '20-25 mins',
+      distance: '2.0 km',
+      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
+      offer: '25% OFF',
+      isVeg: true,
+    },
+    {
+      id: 6,
+      name: 'Noodle House',
+      cuisine: 'Chinese Noodles, Asian',
+      rating: 4.1,
+      deliveryTime: '25-30 mins',
+      distance: '2.3 km',
+      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
+      offer: 'FREE DELIVERY',
+      isVeg: true,
+    },
   ];
 
   const categories = [
-    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200', color: '#FF8559' },
-    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200', color: '#FFB380' },
-    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200', color: '#FF6B35' },
-    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200', color: '#FF8559' },
-    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200', color: '#22C55E' },
-    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200', color: '#FFB380' },
+    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200' },
+    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200' },
+    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200' },
+    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200' },
+    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200' },
+    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200' },
+    { id: 7, name: 'Juice', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200' },
+    { id: 8, name: 'Cake', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200' },
+    { id: 9, name: 'Noodles', image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=200' },
+    { id: 10, name: 'Salad', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200' },
   ];
 
   const offers = [
@@ -71,17 +108,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header with Account Button */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.locationSection}>
-          <View style={styles.locationIcon}>
-            <View style={styles.locationPinSmall} />
-          </View>
-          <View style={styles.locationText}>
-            <Text style={styles.locationTitle}>Delhi</Text>
-            <Text style={styles.locationSubtitle}>Connaught Place, New Delhi ▼</Text>
-          </View>
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>SWATO</Text>
         <TouchableOpacity style={styles.profileIcon} onPress={() => router.push('/(tabs)/explore')}>
           <View style={styles.profileCircle}>
             <Text style={styles.profileText}>U</Text>
@@ -89,23 +118,36 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <TouchableOpacity
-        style={styles.searchContainer}
-        onPress={() => router.push('/search')}
-        activeOpacity={0.7}
-      >
-        <View style={styles.searchBar}>
-          <View style={styles.searchIconContainer}>
-            <View style={styles.searchIconCircle} />
+      {/* Location Section */}
+      <View style={styles.locationBanner}>
+        <TouchableOpacity style={styles.locationSection}>
+          <View style={styles.locationIconSmall}>
+            <Text style={styles.locationPin}>📍</Text>
           </View>
+          <View style={styles.locationTextSection}>
+            <Text style={styles.locationTitle}>Delhi</Text>
+            <Text style={styles.locationSubtitle}>Connaught Place, New Delhi</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Search and Filter Bar */}
+      <View style={styles.searchContainer}>
+        <TouchableOpacity
+          style={styles.searchBar}
+          onPress={() => router.push('/search')}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.searchIcon}>🔍</Text>
           <Text style={styles.searchPlaceholder}>Search for 'Biryani'</Text>
-        </View>
-        <View style={styles.vegButton}>
-          <View style={styles.vegIndicator} />
-          <Text style={styles.vegText}>VEG</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.vegFilterButton}
+          onPress={() => router.push('/veg-filter')}
+        >
+          <Text style={styles.vegFilterIcon}>🥬</Text>
+        </TouchableOpacity>
+      </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Banner */}
@@ -260,111 +302,98 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 50 : 20,
-    paddingBottom: 12,
+    paddingBottom: 16,
     backgroundColor: '#FF6B35',
   },
-  locationSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  locationIcon: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  locationPinSmall: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#FFFFFF',
-  },
-  locationText: {
-    flex: 1,
-  },
-  locationTitle: {
-    fontSize: 16,
+  headerTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-  },
-  locationSubtitle: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    opacity: 0.9,
   },
   profileIcon: {
     marginLeft: 12,
   },
   profileCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FF8559',
   },
   profileText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FF6B35',
+  },
+  locationBanner: {
+    backgroundColor: '#FFF3EE',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginTop: 0,
+  },
+  locationSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  locationIconSmall: {
+    marginRight: 10,
+  },
+  locationPin: {
+    fontSize: 20,
+  },
+  locationTextSection: {
+    flex: 1,
+  },
+  locationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1A1A1A',
+  },
+  locationSubtitle: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
   },
   searchContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FFFFFF',
     gap: 8,
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F5F5F5',
     borderRadius: 12,
     paddingHorizontal: 12,
-    height: 48,
+    height: 46,
   },
-  searchIconContainer: {
-    width: 24,
-    height: 24,
+  searchIcon: {
+    fontSize: 18,
     marginRight: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchIconCircle: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#999',
   },
   searchPlaceholder: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: '#999',
   },
-  vegButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+  vegFilterButton: {
+    width: 46,
+    height: 46,
     borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 48,
-    gap: 6,
-  },
-  vegIndicator: {
-    width: 12,
-    height: 12,
+    backgroundColor: '#FFF3EE',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 2,
     borderColor: '#22C55E',
-    borderRadius: 2,
   },
-  vegText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#22C55E',
+  vegFilterIcon: {
+    fontSize: 22,
   },
   content: {
     flex: 1,
