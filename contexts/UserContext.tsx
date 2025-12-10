@@ -58,6 +58,7 @@ interface UserContextType {
   user: UserData | null;
   setUser: (user: UserData) => void;
   updateUser: (updates: Partial<UserData>) => void;
+  updateUserProfile: (updates: Partial<UserData>) => void;
   
   favorites: number[];
   addToFavorites: (restaurantId: number) => void;
@@ -98,6 +99,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateUser = (updates: Partial<UserData>) => {
+    if (user) {
+      setUserState({ ...user, ...updates });
+    }
+  };
+
+  const updateUserProfile = (updates: Partial<UserData>) => {
     if (user) {
       setUserState({ ...user, ...updates });
     }
@@ -197,6 +204,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         user,
         setUser,
         updateUser,
+        updateUserProfile,
         favorites,
         addToFavorites,
         removeFromFavorites,

@@ -22,7 +22,7 @@ export default function HomeScreen() {
   const { user, isItemFavorite, addItemToFavorites, removeItemFromFavorites } = useUser();
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [vegFilterModal, setVegFilterModal] = useState(false);
-  const [vegFilter, setVegFilter] = useState<'all' | 'veg'>('all');
+  const [vegFilter, setVegFilter] = useState<'all' | 'veg' | 'nonveg'>('all');
   const [rememberChoice, setRememberChoice] = useState(false);
 
   // Get popular items from centralized data
@@ -53,11 +53,15 @@ export default function HomeScreen() {
 
   // Filter items based on veg filter (using dynamic data)
   const filteredFoodItems = vegFilter === 'veg' 
-    ? popularItems.filter(item => item.isVeg) 
+    ? popularItems.filter(item => item.isVeg)
+    : vegFilter === 'nonveg'
+    ? popularItems.filter(item => !item.isVeg)
     : popularItems;
 
   const filteredRestaurants = vegFilter === 'veg'
     ? restaurants.filter(r => r.isVeg)
+    : vegFilter === 'nonveg'
+    ? restaurants.filter(r => !r.isVeg)
     : restaurants;
 
   const handleVegFilterApply = () => {
@@ -179,6 +183,16 @@ export default function HomeScreen() {
                 <Text style={styles.radioLabel}>Pure veg restaurants only</Text>
                 <View style={styles.radioButton}>
                   {vegFilter === 'veg' && <View style={styles.radioButtonSelected} />}
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.radioOption}
+                onPress={() => setVegFilter('nonveg')}
+              >
+                <Text style={styles.radioLabel}>Non-veg restaurants only</Text>
+                <View style={styles.radioButton}>
+                  {vegFilter === 'nonveg' && <View style={styles.radioButtonSelected} />}
                 </View>
               </TouchableOpacity>
             </View>

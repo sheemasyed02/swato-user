@@ -1,3 +1,5 @@
+import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -12,43 +14,14 @@ import {
 
 export default function OrdersScreen() {
   const router = useRouter();
-
-  const orders = [
-    {
-      id: '12345',
-      restaurant: 'Delhi Darbar Restaurant',
-      items: ['Chicken Biryani x2', 'Butter Chicken x1'],
-      total: 598,
-      date: '8 Dec 2025, 8:30 PM',
-      status: 'Delivered',
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400',
-    },
-    {
-      id: '12344',
-      restaurant: 'Wow! Momo',
-      items: ['Veg Momos x2', 'Chicken Momos x1'],
-      total: 320,
-      date: '7 Dec 2025, 7:15 PM',
-      status: 'Delivered',
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400',
-    },
-    {
-      id: '12343',
-      restaurant: 'Pizza Paradise',
-      items: ['Margherita Pizza', 'Garlic Bread'],
-      total: 450,
-      date: '5 Dec 2025, 9:00 PM',
-      status: 'Delivered',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400',
-    },
-  ];
+  const { orders } = useUser();
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Your Orders</Text>
         <View style={{ width: 40 }} />
@@ -57,20 +30,33 @@ export default function OrdersScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {orders.length === 0 ? (
           <View style={styles.emptyState}>
+            <Ionicons name="receipt-outline" size={80} color="#CCCCCC" />
             <Text style={styles.emptyText}>No orders yet</Text>
             <Text style={styles.emptySubtext}>Your order history will appear here</Text>
+            <TouchableOpacity 
+              style={styles.browseButton}
+              onPress={() => router.push('/(tabs)')}
+            >
+              <Text style={styles.browseButtonText}>Browse Restaurants</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           orders.map((order) => (
             <TouchableOpacity key={order.id} style={styles.orderCard}>
               <View style={styles.orderHeader}>
                 <View style={styles.orderImageContainer}>
-                  <Image source={{ uri: order.image }} style={styles.orderImage} />
+                  <Image source={{ uri: order.restaurantImage }} style={styles.orderImage} />
                 </View>
                 <View style={styles.orderInfo}>
-                  <Text style={styles.restaurantName}>{order.restaurant}</Text>
+                  <Text style={styles.restaurantName}>{order.restaurantName}</Text>
                   <Text style={styles.orderDate}>{order.date}</Text>
-                  <View style={styles.statusBadge}>
+                  <View style={[
+                    styles.statusBadge,
+                    order.status === 'Delivered' && styles.statusDelivered,
+                    order.status === 'On the way' && styles.statusOnTheWay,
+                    order.status === 'Preparing' && styles.statusPreparing,
+                    order.status === 'Cancelled' && styles.statusCancelled,
+                  ]}>
                     <View style={styles.statusDot} />
                     <Text style={styles.statusText}>{order.status}</Text>
                   </View>
@@ -80,7 +66,7 @@ export default function OrdersScreen() {
               <View style={styles.orderDetails}>
                 <Text style={styles.orderLabel}>Order #{order.id}</Text>
                 {order.items.map((item, index) => (
-                  <Text key={index} style={styles.orderItem}>• {item}</Text>
+                  <Text key={index} style={styles.orderItem}>• {item.name} x{item.quantity}</Text>
                 ))}
                 <View style={styles.orderFooter}>
                   <Text style={styles.totalLabel}>Total</Text>
@@ -142,16 +128,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 80,
+    paddingHorizontal: 32,
   },
   emptyText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#666',
+    marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
     color: '#999',
     marginTop: 8,
+    textAlign: 'center',
+  },
+  browseButton: {
+    marginTop: 24,
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 24,
+  },
+  browseButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
   orderCard: {
     backgroundColor: '#FFFFFF',
@@ -191,7 +192,23 @@ const styles = StyleSheet.create({
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 6,
+    marginTop: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  statusDelivered: {
+    backgroundColor: '#D1FAE5',
+  },
+  statusOnTheWay: {
+    backgroundColor: '#DBEAFE',
+  },
+  statusPreparing: {
+    backgroundColor: '#FEF3C7',
+  },
+  statusCancelled: {
+    backgroundColor: '#FEE2E2',
   },
   statusDot: {
     width: 6,

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -34,7 +35,7 @@ export default function AddressesScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Addresses</Text>
         <View style={{ width: 40 }} />
@@ -45,12 +46,17 @@ export default function AddressesScreen() {
           <View key={addr.id} style={styles.addressCard}>
             <View style={styles.addressHeader}>
               <View style={styles.typeIcon}>
-                <Text style={styles.typeIconText}>{addr.type === 'Home' ? '🏠' : '🏢'}</Text>
+                <Ionicons 
+                  name={addr.type === 'Home' ? 'home' : 'briefcase'} 
+                  size={20} 
+                  color="#FF6B35" 
+                />
               </View>
               <View style={styles.addressInfo}>
                 <Text style={styles.addressType}>{addr.type}</Text>
                 {addr.isDefault && (
                   <View style={styles.defaultBadge}>
+                    <Ionicons name="checkmark-circle" size={14} color="#10B981" />
                     <Text style={styles.defaultText}>Default</Text>
                   </View>
                 )}
@@ -60,9 +66,11 @@ export default function AddressesScreen() {
             <Text style={styles.addressDetails}>{addr.details}</Text>
             <View style={styles.addressActions}>
               <TouchableOpacity style={styles.editButton}>
+                <Ionicons name="pencil" size={16} color="#FF6B35" />
                 <Text style={styles.editButtonText}>Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.deleteButton}>
+                <Ionicons name="trash-outline" size={16} color="#EF4444" />
                 <Text style={styles.deleteButtonText}>Delete</Text>
               </TouchableOpacity>
             </View>
@@ -70,7 +78,8 @@ export default function AddressesScreen() {
         ))}
 
         <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+ Add New Address</Text>
+          <Ionicons name="add-circle" size={24} color="#FF6B35" />
+          <Text style={styles.addButtonText}>Add New Address</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -147,7 +156,10 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
   },
   defaultBadge: {
-    backgroundColor: '#FF6B35',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#D1FAE5',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -156,7 +168,7 @@ const styles = StyleSheet.create({
   defaultText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#10B981',
   },
   addressText: {
     fontSize: 15,
@@ -175,10 +187,13 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
     backgroundColor: '#FFF3EE',
     paddingVertical: 10,
     borderRadius: 8,
-    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#FF6B35',
   },
@@ -189,10 +204,13 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
     backgroundColor: '#FEE2E2',
     paddingVertical: 10,
     borderRadius: 8,
-    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#EF4444',
   },
@@ -202,11 +220,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   addButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
     backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
     padding: 16,
     borderRadius: 12,
-    alignItems: 'center',
     borderWidth: 2,
     borderColor: '#FF6B35',
     borderStyle: 'dashed',
