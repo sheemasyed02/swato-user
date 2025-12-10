@@ -14,10 +14,41 @@ export default function VegFilterScreen() {
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   const filterOptions = [
-    { id: 'all', label: 'All', icon: '🍽️' },
-    { id: 'veg', label: 'Vegetarian Only', icon: '🥬' },
-    { id: 'non-veg', label: 'Non-Vegetarian', icon: '🍗' },
+    { id: 'all', label: 'All', iconType: 'all' },
+    { id: 'veg', label: 'Vegetarian Only', iconType: 'veg' },
+    { id: 'non-veg', label: 'Non-Vegetarian', iconType: 'non-veg' },
   ];
+
+  const renderIcon = (iconType: string) => {
+    switch (iconType) {
+      case 'all':
+        return (
+          <View style={styles.iconContainer}>
+            <View style={styles.plateIcon}>
+              <View style={styles.plateRim} />
+            </View>
+          </View>
+        );
+      case 'veg':
+        return (
+          <View style={styles.iconContainer}>
+            <View style={styles.vegSquare}>
+              <View style={styles.vegDot} />
+            </View>
+          </View>
+        );
+      case 'non-veg':
+        return (
+          <View style={styles.iconContainer}>
+            <View style={styles.nonVegSquare}>
+              <View style={styles.nonVegTriangle} />
+            </View>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
 
   const handleFilterSelect = (filterId: string) => {
     setSelectedFilter(filterId);
@@ -44,7 +75,7 @@ export default function VegFilterScreen() {
               style={[styles.filterOption, selectedFilter === option.id && styles.filterOptionActive]}
               onPress={() => handleFilterSelect(option.id)}
             >
-              <Text style={styles.filterIcon}>{option.icon}</Text>
+              {renderIcon(option.iconType)}
               <Text style={[styles.filterLabel, selectedFilter === option.id && styles.filterLabelActive]}>
                 {option.label}
               </Text>
@@ -142,9 +173,63 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF3EE',
     borderColor: '#FF6B35',
   },
-  filterIcon: {
-    fontSize: 28,
+  iconContainer: {
+    width: 40,
+    height: 40,
     marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  plateIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E0E0E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  plateRim: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#999',
+  },
+  vegSquare: {
+    width: 32,
+    height: 32,
+    borderWidth: 2,
+    borderColor: '#22C55E',
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  vegDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#22C55E',
+  },
+  nonVegSquare: {
+    width: 32,
+    height: 32,
+    borderWidth: 2,
+    borderColor: '#EF4444',
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nonVegTriangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderBottomWidth: 14,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#EF4444',
   },
   filterLabel: {
     fontSize: 16,

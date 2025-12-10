@@ -53,7 +53,10 @@ export default function SearchScreen() {
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
         <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <View style={styles.searchIconContainer}>
+            <View style={styles.searchIconCircle} />
+            <View style={styles.searchIconHandle} />
+          </View>
           <TextInput
             style={styles.searchInput}
             placeholder="Search for dishes or restaurants"
@@ -150,9 +153,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 48,
   },
-  searchIcon: {
-    fontSize: 18,
-    marginRight: 8,
+  searchIconContainer: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+    position: 'relative',
+  },
+  searchIconCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: '#666',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  searchIconHandle: {
+    width: 6,
+    height: 2,
+    backgroundColor: '#666',
+    position: 'absolute',
+    bottom: 1,
+    right: 0,
+    transform: [{ rotate: '45deg' }],
   },
   searchInput: {
     flex: 1,

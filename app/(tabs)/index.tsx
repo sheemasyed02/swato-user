@@ -88,16 +88,20 @@ export default function HomeScreen() {
   ];
 
   const categories = [
-    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200' },
-    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200' },
-    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200' },
-    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200' },
-    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200' },
-    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200' },
-    { id: 7, name: 'Juice', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200' },
-    { id: 8, name: 'Cake', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200' },
-    { id: 9, name: 'Noodles', image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=200' },
-    { id: 10, name: 'Salad', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200' },
+    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200', available: true },
+    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200', available: true },
+    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200', available: true },
+    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200', available: true },
+    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200', available: true },
+    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200', available: false },
+    { id: 7, name: 'Juice', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200', available: true },
+    { id: 8, name: 'Cake', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200', available: true },
+    { id: 9, name: 'Noodles', image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=200', available: false },
+    { id: 10, name: 'Salad', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200', available: true },
+    { id: 11, name: 'Pasta', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200', available: true },
+    { id: 12, name: 'Sandwich', image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=200', available: false },
+    { id: 13, name: 'Ice Cream', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=200', available: true },
+    { id: 14, name: 'Sushi', image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=200', available: false },
   ];
 
   const offers = [
@@ -121,8 +125,8 @@ export default function HomeScreen() {
       {/* Location Section */}
       <View style={styles.locationBanner}>
         <TouchableOpacity style={styles.locationSection}>
-          <View style={styles.locationIconSmall}>
-            <Text style={styles.locationPin}>📍</Text>
+          <View style={styles.locationIconContainer}>
+            <View style={styles.locationPinIcon} />
           </View>
           <View style={styles.locationTextSection}>
             <Text style={styles.locationTitle}>Delhi</Text>
@@ -138,14 +142,20 @@ export default function HomeScreen() {
           onPress={() => router.push('/search')}
           activeOpacity={0.7}
         >
-          <Text style={styles.searchIcon}>🔍</Text>
+          <View style={styles.searchIconContainer}>
+            <View style={styles.searchIconCircle} />
+            <View style={styles.searchIconHandle} />
+          </View>
           <Text style={styles.searchPlaceholder}>Search for 'Biryani'</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.vegFilterButton}
           onPress={() => router.push('/veg-filter')}
         >
-          <Text style={styles.vegFilterIcon}>🥬</Text>
+          <View style={styles.vegLeafIcon}>
+            <View style={styles.leafStem} />
+            <View style={styles.leafShape} />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -180,12 +190,21 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={category.id}
                 style={styles.categoryItem}
-                onPress={() => console.log('Category:', category.name)}
+                onPress={() => category.available && console.log('Category:', category.name)}
+                disabled={!category.available}
               >
-                <View style={styles.categoryCircle}>
-                  <Image source={{ uri: category.image }} style={styles.categoryImage} />
+                <View style={[styles.categoryCircle, !category.available && styles.categoryUnavailable]}>
+                  <Image 
+                    source={{ uri: category.image }} 
+                    style={[styles.categoryImage, !category.available && styles.imageGrayscale]} 
+                  />
+                  {!category.available && (
+                    <View style={styles.unavailableOverlay}>
+                      <Text style={styles.unavailableText}>Soon</Text>
+                    </View>
+                  )}
                 </View>
-                <Text style={styles.categoryName}>{category.name}</Text>
+                <Text style={[styles.categoryName, !category.available && styles.categoryNameUnavailable]}>{category.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -301,7 +320,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingTop: Platform.OS === 'ios' ? 55 : 30,
     paddingBottom: 16,
     backgroundColor: '#FF6B35',
   },
@@ -338,11 +357,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  locationIconSmall: {
+  locationIconContainer: {
+    width: 24,
+    height: 24,
     marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  locationPin: {
-    fontSize: 20,
+  locationPinIcon: {
+    width: 12,
+    height: 12,
+    backgroundColor: '#FF6B35',
+    borderRadius: 6,
+    position: 'relative',
   },
   locationTextSection: {
     flex: 1,
@@ -373,9 +400,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 46,
   },
-  searchIcon: {
-    fontSize: 18,
-    marginRight: 8,
+  searchIconContainer: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+    position: 'relative',
+  },
+  searchIconCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: '#666',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  searchIconHandle: {
+    width: 6,
+    height: 2,
+    backgroundColor: '#666',
+    position: 'absolute',
+    bottom: 1,
+    right: 0,
+    transform: [{ rotate: '45deg' }],
   },
   searchPlaceholder: {
     flex: 1,
@@ -392,8 +440,27 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#22C55E',
   },
-  vegFilterIcon: {
-    fontSize: 22,
+  vegLeafIcon: {
+    width: 24,
+    height: 24,
+    position: 'relative',
+  },
+  leafStem: {
+    width: 2,
+    height: 20,
+    backgroundColor: '#22C55E',
+    position: 'absolute',
+    left: 11,
+    top: 2,
+  },
+  leafShape: {
+    width: 16,
+    height: 20,
+    backgroundColor: '#22C55E',
+    borderRadius: 12,
+    position: 'absolute',
+    left: 4,
+    top: 2,
   },
   content: {
     flex: 1,
@@ -535,16 +602,42 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: '#FF6B35',
+    position: 'relative',
+  },
+  categoryUnavailable: {
+    borderColor: '#CCCCCC',
+    backgroundColor: '#F0F0F0',
   },
   categoryImage: {
     width: '100%',
     height: '100%',
+  },
+  imageGrayscale: {
+    opacity: 0.4,
+  },
+  unavailableOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  unavailableText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#999',
   },
   categoryName: {
     fontSize: 14,
     color: '#1A1A1A',
     fontWeight: '500',
     textAlign: 'center',
+  },
+  categoryNameUnavailable: {
+    color: '#999',
   },
   restaurantList: {
     paddingLeft: 16,
