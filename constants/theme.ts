@@ -5,8 +5,8 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#FF6B35'; // Swato primary orange
+const tintColorDark = '#FF8559'; // Swato lighter orange
 
 export const Colors = {
   light: {
