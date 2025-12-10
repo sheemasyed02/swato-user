@@ -22,57 +22,199 @@ export default function RestaurantDetailScreen() {
   const isRestaurantFavorite = isFavorite(restaurantId);
   const restaurantFavoriteItems = getFavoriteItemsByRestaurant(restaurantId);
 
-  // Mock restaurant data
-  const restaurant = {
-    id,
-    name: 'Delhi Darbar Restaurant',
-    rating: 4.3,
-    deliveryTime: '25-30 mins',
-    cuisine: 'North Indian, Biryani, Mughlai',
-    distance: '2.5 km',
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800',
-  };
-
-  const categories = ['Recommended', 'Biryani', 'Curries', 'Breads', 'Beverages'];
-
-  const menuItems = [
+  // All restaurants database
+  const allRestaurants = [
     {
       id: 1,
-      name: 'Chicken Biryani',
-      description: 'Aromatic basmati rice cooked with tender chicken pieces',
-      price: 249,
-      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400',
-      isVeg: false,
-      rating: 4.5,
+      name: 'Delhi Darbar Restaurant',
+      rating: 4.3,
+      deliveryTime: '25-30 mins',
+      cuisine: 'North Indian, Biryani, Mughlai',
+      distance: '2.5 km',
+      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800',
     },
     {
       id: 2,
-      name: 'Paneer Butter Masala',
-      description: 'Cottage cheese in rich tomato and butter gravy',
-      price: 199,
-      image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400',
-      isVeg: true,
-      rating: 4.3,
+      name: 'Wow! Momo',
+      rating: 4.4,
+      deliveryTime: '20-25 mins',
+      cuisine: 'Chinese, Tibetan, Momos',
+      distance: '1.8 km',
+      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800',
     },
     {
       id: 3,
-      name: 'Butter Chicken',
-      description: 'Classic North Indian chicken curry in creamy tomato sauce',
-      price: 279,
-      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400',
-      isVeg: false,
-      rating: 4.6,
+      name: 'Pizza Paradise',
+      rating: 4.2,
+      deliveryTime: '30-35 mins',
+      cuisine: 'Italian, Pizza, Pasta',
+      distance: '3.2 km',
+      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
     },
     {
       id: 4,
-      name: 'Garlic Naan',
-      description: 'Soft leavened bread with garlic and butter',
-      price: 59,
-      image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400',
-      isVeg: true,
-      rating: 4.4,
+      name: 'The Juice Bar',
+      rating: 4.5,
+      deliveryTime: '15-20 mins',
+      cuisine: 'Fresh Juices, Smoothies',
+      distance: '1.2 km',
+      image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=800',
+    },
+    {
+      id: 5,
+      name: 'Sweet Cravings Bakery',
+      rating: 4.6,
+      deliveryTime: '20-25 mins',
+      cuisine: 'Cakes, Pastries, Desserts',
+      distance: '2.0 km',
+      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
+    },
+    {
+      id: 6,
+      name: 'Noodle House',
+      rating: 4.1,
+      deliveryTime: '25-30 mins',
+      cuisine: 'Chinese Noodles, Asian',
+      distance: '2.3 km',
+      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
     },
   ];
+
+  const restaurant = allRestaurants.find(r => r.id === restaurantId);
+
+  if (!restaurant) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#1A1A1A" />
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 16, color: '#666' }}>Restaurant not found</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const categories = ['Recommended', 'Biryani', 'Curries', 'Breads', 'Beverages'];
+
+  // All menu items by restaurant
+  const allMenuItems: Record<number, any[]> = {
+    1: [ // Delhi Darbar
+      {
+        id: 1,
+        name: 'Chicken Biryani',
+        description: 'Aromatic basmati rice cooked with tender chicken pieces',
+        price: 249,
+        image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800',
+        isVeg: false,
+        rating: 4.5,
+      },
+      {
+        id: 2,
+        name: 'Paneer Butter Masala',
+        description: 'Cottage cheese in rich tomato and butter gravy',
+        price: 199,
+        image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800',
+        isVeg: true,
+        rating: 4.3,
+      },
+      {
+        id: 3,
+        name: 'Butter Chicken',
+        description: 'Classic North Indian chicken curry in creamy tomato sauce',
+        price: 279,
+        image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800',
+        isVeg: false,
+        rating: 4.6,
+      },
+      {
+        id: 4,
+        name: 'Garlic Naan',
+        description: 'Soft leavened bread with garlic and butter',
+        price: 59,
+        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800',
+        isVeg: true,
+        rating: 4.4,
+      },
+    ],
+    2: [ // Wow! Momo
+      {
+        id: 101,
+        name: 'Veg Steamed Momos',
+        description: 'Fresh vegetables wrapped in soft dumplings',
+        price: 129,
+        image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800',
+        isVeg: true,
+        rating: 4.4,
+      },
+      {
+        id: 102,
+        name: 'Chicken Fried Momos',
+        description: 'Crispy fried chicken momos with spicy sauce',
+        price: 159,
+        image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800',
+        isVeg: false,
+        rating: 4.5,
+      },
+    ],
+    3: [ // Pizza Paradise
+      {
+        id: 201,
+        name: 'Margherita Pizza',
+        description: 'Classic Italian pizza with fresh mozzarella',
+        price: 299,
+        image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800',
+        isVeg: true,
+        rating: 4.6,
+      },
+      {
+        id: 202,
+        name: 'Pepperoni Pizza',
+        description: 'Loaded with pepperoni and mozzarella cheese',
+        price: 349,
+        image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800',
+        isVeg: false,
+        rating: 4.5,
+      },
+    ],
+    4: [ // The Juice Bar
+      {
+        id: 301,
+        name: 'Fresh Orange Juice',
+        description: 'Freshly squeezed orange juice',
+        price: 89,
+        image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=800',
+        isVeg: true,
+        rating: 4.7,
+      },
+    ],
+    5: [ // Sweet Cravings
+      {
+        id: 401,
+        name: 'Chocolate Cake',
+        description: 'Rich chocolate cake with ganache',
+        price: 349,
+        image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
+        isVeg: true,
+        rating: 4.7,
+      },
+    ],
+    6: [ // Noodle House
+      {
+        id: 501,
+        name: 'Hakka Noodles',
+        description: 'Stir-fried noodles with vegetables',
+        price: 179,
+        image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
+        isVeg: true,
+        rating: 4.2,
+      },
+    ],
+  };
+
+  const menuItems = allMenuItems[restaurantId] || [];
 
   const handleToggleRestaurantFavorite = () => {
     if (isRestaurantFavorite) {
@@ -189,7 +331,12 @@ export default function RestaurantDetailScreen() {
         <View style={styles.menuSection}>
           <Text style={styles.menuTitle}>{selectedCategory}</Text>
           {menuItems.map((item) => (
-            <View key={item.id} style={styles.menuItem}>
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.menuItem}
+              onPress={() => router.push(`/item/${restaurantId}/${item.id}` as any)}
+              activeOpacity={0.7}
+            >
               <View style={styles.menuItemInfo}>
                 <View style={styles.vegIndicator}>
                   <Ionicons 
@@ -221,11 +368,17 @@ export default function RestaurantDetailScreen() {
               </View>
               <View style={styles.menuItemImageContainer}>
                 <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity 
+                  style={styles.addButton}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    router.push(`/item/${restaurantId}/${item.id}` as any);
+                  }}
+                >
                   <Text style={styles.addButtonText}>ADD</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>

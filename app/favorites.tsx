@@ -45,7 +45,7 @@ export default function FavoritesScreen() {
             <TouchableOpacity
               key={`${item.restaurantId}-${item.id}`}
               style={styles.favoriteCard}
-              onPress={() => router.push(`/restaurant/${item.restaurantId}` as any)}
+              onPress={() => router.push(`/item/${item.restaurantId}/${item.id}` as any)}
             >
               <Image source={{ uri: item.image }} style={styles.favoriteImage} />
               <View style={styles.favoriteInfo}>

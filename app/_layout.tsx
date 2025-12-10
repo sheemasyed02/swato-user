@@ -22,6 +22,7 @@ export default function RootLayout() {
           <Stack.Screen name="search" options={{ headerShown: false }} />
           <Stack.Screen name="restaurant" options={{ headerShown: false }} />
           <Stack.Screen name="restaurant-favorites" options={{ headerShown: false }} />
+          <Stack.Screen name="item" options={{ headerShown: false }} />
           <Stack.Screen name="veg-filter" options={{ headerShown: false, presentation: 'card' }} />
           <Stack.Screen name="orders" options={{ headerShown: false }} />
           <Stack.Screen name="favorites" options={{ headerShown: false }} />

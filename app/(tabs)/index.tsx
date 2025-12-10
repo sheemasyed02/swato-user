@@ -257,13 +257,14 @@ export default function HomeScreen() {
           <Text style={styles.searchPlaceholder}>Search for 'Biryani'</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.vegFilterButton}
+          style={[styles.vegFilterButton, vegFilter === 'veg' && styles.vegFilterButtonActive]}
           onPress={() => setVegFilterModal(true)}
         >
-          <View style={styles.vegLeafIcon}>
-            <View style={styles.leafStem} />
-            <View style={styles.leafShape} />
-          </View>
+          <Ionicons 
+            name="leaf" 
+            size={20} 
+            color={vegFilter === 'veg' ? '#FFFFFF' : '#10B981'} 
+          />
         </TouchableOpacity>
       </View>
 
@@ -444,7 +445,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={item.id}
                 style={styles.foodItemCard}
-                onPress={() => router.push(`/restaurant/${item.restaurantId}` as any)}
+                onPress={() => router.push(`/item/${item.restaurantId}/${item.id}` as any)}
               >
                 <Image source={{ uri: item.image }} style={styles.foodItemImage} />
                 <View style={styles.foodItemVegBadge}>
@@ -675,34 +676,16 @@ const styles = StyleSheet.create({
   vegFilterButton: {
     width: 46,
     height: 46,
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    backgroundColor: '#FFF3EE',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#22C55E',
+    borderWidth: 1,
+    borderColor: '#10B981',
   },
-  vegLeafIcon: {
-    width: 24,
-    height: 24,
-    position: 'relative',
-  },
-  leafStem: {
-    width: 2,
-    height: 20,
-    backgroundColor: '#22C55E',
-    position: 'absolute',
-    left: 11,
-    top: 2,
-  },
-  leafShape: {
-    width: 16,
-    height: 20,
-    backgroundColor: '#22C55E',
-    borderRadius: 12,
-    position: 'absolute',
-    left: 4,
-    top: 2,
+  vegFilterButtonActive: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
   },
   content: {
     flex: 1,
