@@ -1,7 +1,10 @@
+import { useUser } from '@/contexts/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Alert,
+    Image,
     Platform,
     ScrollView,
     StyleSheet,
@@ -13,16 +16,30 @@ import {
 
 export default function FeedbackScreen() {
   const router = useRouter();
-  const [rating, setRating] = useState(0);
+  const { orders } = useUser();
+  const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
+  const [foodRating, setFoodRating] = useState(0);
+  const [deliveryRating, setDeliveryRating] = useState(0);
   const [feedback, setFeedback] = useState('');
 
+  const deliveredOrders = orders.filter(o => o.status === 'Delivered');
+
   const handleSubmit = () => {
-    if (rating === 0) {
-      Alert.alert('Rating Required', 'Please select a rating');
+    if (!selectedOrder) {
+      Alert.alert('Select Order', 'Please select an order to give feedback');
       return;
     }
-    Alert.alert('Thank You!', 'Your feedback has been submitted successfully', [
-      { text: 'OK', onPress: () => router.back() },
+    if (foodRating === 0 || deliveryRating === 0) {
+      Alert.alert('Rating Required', 'Please rate both food quality and delivery');
+      return;
+    }
+    Alert.alert('Thank You!', 'Your feedback helps us improve our service', [
+      { text: 'OK', onPress: () => {
+        setSelectedOrder(null);
+        setFoodRating(0);
+        setDeliveryRating(0);
+        setFeedback('');
+      }},
     ]);
   };
 
@@ -31,62 +48,123 @@ export default function FeedbackScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Feedback</Text>
+        <Text style={styles.headerTitle}>Order Feedback</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Rating Section */}
+        {/* Select Order */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>How was your experience?</Text>
-          <View style={styles.ratingContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
+          <Text style={styles.sectionTitle}>Select Order to Review</Text>
+          {deliveredOrders.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Ionicons name="receipt-outline" size={60} color="#CCCCCC" />
+              <Text style={styles.emptyText}>No delivered orders yet</Text>
+              <Text style={styles.emptySubtext}>Complete an order to give feedback</Text>
+            </View>
+          ) : (
+            deliveredOrders.slice(0, 5).map((order) => (
               <TouchableOpacity
-                key={star}
-                onPress={() => setRating(star)}
-                style={styles.starButton}
+                key={order.id}
+                style={[
+                  styles.orderCard,
+                  selectedOrder === order.id && styles.orderCardSelected
+                ]}
+                onPress={() => setSelectedOrder(order.id)}
               >
-                <Text style={[styles.star, rating >= star && styles.starActive]}>★</Text>
+                <Image source={{ uri: order.restaurantImage }} style={styles.orderImage} />
+                <View style={styles.orderInfo}>
+                  <Text style={styles.orderRestaurant}>{order.restaurantName}</Text>
+                  <Text style={styles.orderDate}>{order.date}</Text>
+                  <Text style={styles.orderTotal}>₹{order.total}</Text>
+                </View>
+                {selectedOrder === order.id && (
+                  <Ionicons name="checkmark-circle" size={24} color="#FF6B35" />
+                )}
               </TouchableOpacity>
-            ))}
-          </View>
+            ))
+          )}
         </View>
 
-        {/* Feedback Input */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Tell us more</Text>
-          <TextInput
-            style={styles.feedbackInput}
-            placeholder="Share your thoughts and suggestions..."
-            placeholderTextColor="#999"
-            multiline
-            numberOfLines={6}
-            textAlignVertical="top"
-            value={feedback}
-            onChangeText={setFeedback}
-          />
-        </View>
+        {selectedOrder && (
+          <>
+            {/* Food Quality Rating */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Rate Food Quality</Text>
+              <View style={styles.ratingContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity
+                    key={star}
+                    onPress={() => setFoodRating(star)}
+                    style={styles.starButton}
+                  >
+                    <Ionicons 
+                      name={foodRating >= star ? "star" : "star-outline"} 
+                      size={36} 
+                      color={foodRating >= star ? "#FFB800" : "#CCCCCC"} 
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
-        {/* Quick Feedback Options */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Feedback</Text>
-          <View style={styles.tagsContainer}>
-            {['Great Service', 'Fast Delivery', 'Good Food', 'Helpful Support', 'Easy to Use'].map(
-              (tag) => (
-                <TouchableOpacity key={tag} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag}</Text>
-                </TouchableOpacity>
-              )
-            )}
-          </View>
-        </View>
+            {/* Delivery Rating */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Rate Delivery Experience</Text>
+              <View style={styles.ratingContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity
+                    key={star}
+                    onPress={() => setDeliveryRating(star)}
+                    style={styles.starButton}
+                  >
+                    <Ionicons 
+                      name={deliveryRating >= star ? "star" : "star-outline"} 
+                      size={36} 
+                      color={deliveryRating >= star ? "#FFB800" : "#CCCCCC"} 
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
-        {/* Submit Button */}
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit Feedback</Text>
-        </TouchableOpacity>
+            {/* Feedback Input */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Additional Comments</Text>
+              <TextInput
+                style={styles.feedbackInput}
+                placeholder="Tell us about your experience..."
+                placeholderTextColor="#999"
+                multiline
+                numberOfLines={6}
+                textAlignVertical="top"
+                value={feedback}
+                onChangeText={setFeedback}
+              />
+            </View>
+
+            {/* Quick Tags */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Quick Feedback</Text>
+              <View style={styles.tagsContainer}>
+                {['Delicious Food', 'Hot & Fresh', 'Well Packed', 'On Time', 'Polite Delivery'].map(
+                  (tag) => (
+                    <TouchableOpacity key={tag} style={styles.tag}>
+                      <Text style={styles.tagText}>{tag}</Text>
+                    </TouchableOpacity>
+                  )
+                )}
+              </View>
+            </View>
+
+            {/* Submit Button */}
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+              <Text style={styles.submitButtonText}>Submit Feedback</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -125,6 +203,60 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    marginTop: 12,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 4,
+  },
+  orderCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  orderCardSelected: {
+    borderColor: '#FF6B35',
+    backgroundColor: '#FFF3EE',
+  },
+  orderImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+  },
+  orderInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  orderRestaurant: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1A1A1A',
+  },
+  orderDate: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  orderTotal: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF6B35',
+    marginTop: 4,
   },
   section: {
     marginTop: 24,

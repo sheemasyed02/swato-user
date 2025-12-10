@@ -54,6 +54,22 @@ export interface Order {
   status: 'Delivered' | 'On the way' | 'Preparing' | 'Cancelled';
 }
 
+export interface Address {
+  id: number;
+  type: string;
+  address: string;
+  details: string;
+  isDefault: boolean;
+}
+
+export interface PaymentMethod {
+  id: number;
+  type: 'card' | 'upi' | 'wallet';
+  name: string;
+  details: string;
+  isDefault: boolean;
+}
+
 interface UserContextType {
   user: UserData | null;
   setUser: (user: UserData) => void;
@@ -82,6 +98,18 @@ interface UserContextType {
   orders: Order[];
   addOrder: (order: Order) => void;
   
+  addresses: Address[];
+  addAddress: (address: Omit<Address, 'id'>) => void;
+  updateAddress: (id: number, address: Partial<Address>) => void;
+  deleteAddress: (id: number) => void;
+  setDefaultAddress: (id: number) => void;
+  
+  paymentMethods: PaymentMethod[];
+  addPaymentMethod: (method: Omit<PaymentMethod, 'id'>) => void;
+  updatePaymentMethod: (id: number, method: Partial<PaymentMethod>) => void;
+  deletePaymentMethod: (id: number) => void;
+  setDefaultPaymentMethod: (id: number) => void;
+  
   resetUserData: () => void;
 }
 
@@ -93,6 +121,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [favoriteItems, setFavoriteItems] = useState<FavoriteItem[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
 
   const setUser = (userData: UserData) => {
     setUserState(userData);
@@ -190,12 +220,96 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setOrders([order, ...orders]);
   };
 
+  // Address management
+  const addAddress = (address: Omit<Address, 'id'>) => {
+    const newId = addresses.length > 0 ? Math.max(...addresses.map(a => a.id)) + 1 : 1;
+    const newAddress = { ...address, id: newId };
+    
+    // If this is the first address or marked as default, set it as default
+    if (addresses.length === 0 || address.isDefault) {
+      setAddresses([
+        ...addresses.map(a => ({ ...a, isDefault: false })),
+        newAddress
+      ]);
+    } else {
+      setAddresses([...addresses, newAddress]);
+    }
+  };
+
+  const updateAddress = (id: number, updates: Partial<Address>) => {
+    setAddresses(addresses.map(addr => 
+      addr.id === id ? { ...addr, ...updates } : addr
+    ));
+  };
+
+  const deleteAddress = (id: number) => {
+    const addressToDelete = addresses.find(a => a.id === id);
+    const remainingAddresses = addresses.filter(a => a.id !== id);
+    
+    // If deleting default address and there are other addresses, make first one default
+    if (addressToDelete?.isDefault && remainingAddresses.length > 0) {
+      remainingAddresses[0].isDefault = true;
+    }
+    
+    setAddresses(remainingAddresses);
+  };
+
+  const setDefaultAddress = (id: number) => {
+    setAddresses(addresses.map(addr => ({
+      ...addr,
+      isDefault: addr.id === id
+    })));
+  };
+
+  // Payment method management
+  const addPaymentMethod = (method: Omit<PaymentMethod, 'id'>) => {
+    const newId = paymentMethods.length > 0 ? Math.max(...paymentMethods.map(p => p.id)) + 1 : 1;
+    const newMethod = { ...method, id: newId };
+    
+    // If this is the first method or marked as default, set it as default
+    if (paymentMethods.length === 0 || method.isDefault) {
+      setPaymentMethods([
+        ...paymentMethods.map(p => ({ ...p, isDefault: false })),
+        newMethod
+      ]);
+    } else {
+      setPaymentMethods([...paymentMethods, newMethod]);
+    }
+  };
+
+  const updatePaymentMethod = (id: number, updates: Partial<PaymentMethod>) => {
+    setPaymentMethods(paymentMethods.map(method => 
+      method.id === id ? { ...method, ...updates } : method
+    ));
+  };
+
+  const deletePaymentMethod = (id: number) => {
+    const methodToDelete = paymentMethods.find(p => p.id === id);
+    const remainingMethods = paymentMethods.filter(p => p.id !== id);
+    
+    // If deleting default method and there are other methods, make first one default
+    if (methodToDelete?.isDefault && remainingMethods.length > 0) {
+      remainingMethods[0].isDefault = true;
+    }
+    
+    setPaymentMethods(remainingMethods);
+  };
+
+  const setDefaultPaymentMethod = (id: number) => {
+    setPaymentMethods(paymentMethods.map(method => ({
+      ...method,
+      isDefault: method.id === id
+    })));
+  };
+
   const resetUserData = () => {
     setUserState(null);
     setFavorites([]);
     setFavoriteItems([]);
     setCart([]);
     setOrders([]);
+    setAddresses([]);
+    setPaymentMethods([]);
   };
 
   return (
@@ -223,6 +337,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         getCartItemCount,
         orders,
         addOrder,
+        addresses,
+        addAddress,
+        updateAddress,
+        deleteAddress,
+        setDefaultAddress,
+        paymentMethods,
+        addPaymentMethod,
+        updatePaymentMethod,
+        deletePaymentMethod,
+        setDefaultPaymentMethod,
         resetUserData,
       }}
     >

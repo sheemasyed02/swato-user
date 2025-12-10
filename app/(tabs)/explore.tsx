@@ -38,6 +38,7 @@ export default function AccountScreen() {
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{customerName}</Text>
             <Text style={styles.profilePhone}>{customerPhone}</Text>
+            {user?.email && <Text style={styles.profileEmail}>{user.email}</Text>}
           </View>
           <TouchableOpacity 
             style={styles.editButton}
@@ -170,6 +171,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+  },
+  profileEmail: {
+    fontSize: 13,
+    color: '#999',
+    marginTop: 2,
   },
   editButton: {
     paddingHorizontal: 16,
