@@ -1,4 +1,5 @@
 import { useUser } from '@/contexts/UserContext';
+import { getPopularItems, restaurants } from '@/data/restaurants';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -24,75 +25,8 @@ export default function HomeScreen() {
   const [vegFilter, setVegFilter] = useState<'all' | 'veg'>('all');
   const [rememberChoice, setRememberChoice] = useState(false);
 
-  // Dynamic restaurant data
-  const restaurants = [
-    {
-      id: 1,
-      name: 'Delhi Darbar Restaurant',
-      cuisine: 'North Indian, Biryani',
-      rating: 4.3,
-      deliveryTime: '25-30 mins',
-      distance: '2.5 km',
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800',
-      offer: 'ITEMS AT ₹109',
-      isVeg: false,
-    },
-    {
-      id: 2,
-      name: 'Wow! Momo',
-      cuisine: 'Chinese, Tibetan, Momos',
-      rating: 4.4,
-      deliveryTime: '20-25 mins',
-      distance: '1.8 km',
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800',
-      offer: '30% OFF UPTO ₹75',
-      isVeg: true,
-    },
-    {
-      id: 3,
-      name: 'Pizza Paradise',
-      cuisine: 'Italian, Pizza, Pasta',
-      rating: 4.2,
-      deliveryTime: '30-35 mins',
-      distance: '3.2 km',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
-      offer: 'FLAT ₹150 OFF',
-      isVeg: true,
-    },
-    {
-      id: 4,
-      name: 'The Juice Bar',
-      cuisine: 'Fresh Juices, Smoothies',
-      rating: 4.5,
-      deliveryTime: '15-20 mins',
-      distance: '1.2 km',
-      image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=800',
-      offer: 'BUY 2 GET 1 FREE',
-      isVeg: true,
-    },
-    {
-      id: 5,
-      name: 'Sweet Cravings Bakery',
-      cuisine: 'Cakes, Pastries, Desserts',
-      rating: 4.6,
-      deliveryTime: '20-25 mins',
-      distance: '2.0 km',
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
-      offer: '25% OFF',
-      isVeg: true,
-    },
-    {
-      id: 6,
-      name: 'Noodle House',
-      cuisine: 'Chinese Noodles, Asian',
-      rating: 4.1,
-      deliveryTime: '25-30 mins',
-      distance: '2.3 km',
-      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
-      offer: 'FREE DELIVERY',
-      isVeg: true,
-    },
-  ];
+  // Get popular items from centralized data
+  const popularItems = getPopularItems(6);
 
   const categories = [
     { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200', available: true },
@@ -117,80 +51,10 @@ export default function HomeScreen() {
     { id: 3, title: 'Meals', subtitle: 'At ₹99', icon: '99', color: '#FF6B35' },
   ];
 
-  // Popular food items across restaurants
-  const foodItems = [
-    {
-      id: 101,
-      restaurantId: 1,
-      restaurantName: 'Delhi Darbar Restaurant',
-      name: 'Chicken Biryani',
-      description: 'Aromatic basmati rice with tender chicken',
-      price: 249,
-      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400',
-      isVeg: false,
-      rating: 4.5,
-    },
-    {
-      id: 102,
-      restaurantId: 2,
-      restaurantName: 'Wow! Momo',
-      name: 'Veg Steamed Momos',
-      description: 'Fresh vegetables wrapped in soft dumplings',
-      price: 129,
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400',
-      isVeg: true,
-      rating: 4.4,
-    },
-    {
-      id: 103,
-      restaurantId: 3,
-      restaurantName: 'Pizza Paradise',
-      name: 'Margherita Pizza',
-      description: 'Classic Italian pizza with fresh mozzarella',
-      price: 299,
-      image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400',
-      isVeg: true,
-      rating: 4.6,
-    },
-    {
-      id: 104,
-      restaurantId: 1,
-      restaurantName: 'Delhi Darbar Restaurant',
-      name: 'Paneer Butter Masala',
-      description: 'Cottage cheese in rich creamy tomato gravy',
-      price: 219,
-      image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400',
-      isVeg: true,
-      rating: 4.3,
-    },
-    {
-      id: 105,
-      restaurantId: 6,
-      restaurantName: 'Noodle House',
-      name: 'Hakka Noodles',
-      description: 'Stir-fried noodles with vegetables',
-      price: 179,
-      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=400',
-      isVeg: true,
-      rating: 4.2,
-    },
-    {
-      id: 106,
-      restaurantId: 5,
-      restaurantName: 'Sweet Cravings Bakery',
-      name: 'Chocolate Cake',
-      description: 'Rich chocolate cake with ganache',
-      price: 349,
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
-      isVeg: true,
-      rating: 4.7,
-    },
-  ];
-
-  // Filter items based on veg filter
+  // Filter items based on veg filter (using dynamic data)
   const filteredFoodItems = vegFilter === 'veg' 
-    ? foodItems.filter(item => item.isVeg) 
-    : foodItems;
+    ? popularItems.filter(item => item.isVeg) 
+    : popularItems;
 
   const filteredRestaurants = vegFilter === 'veg'
     ? restaurants.filter(r => r.isVeg)
@@ -200,14 +64,15 @@ export default function HomeScreen() {
     setVegFilterModal(false);
   };
 
-  const toggleItemFavorite = (item: typeof foodItems[0]) => {
+  const toggleItemFavorite = (item: typeof popularItems[0]) => {
     if (isItemFavorite(item.restaurantId, item.id)) {
       removeItemFromFavorites(item.restaurantId, item.id);
     } else {
+      const restaurant = restaurants.find(r => r.id === item.restaurantId);
       addItemToFavorites({
         id: item.id,
         restaurantId: item.restaurantId,
-        restaurantName: item.restaurantName,
+        restaurantName: restaurant?.name || 'Restaurant',
         itemName: item.name,
         description: item.description,
         price: item.price,

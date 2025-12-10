@@ -1,4 +1,5 @@
 import { useUser } from '@/contexts/UserContext';
+import { getMenuItemById, getRestaurantName } from '@/data/restaurants';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -24,95 +25,8 @@ export default function ItemDetailScreen() {
   const itmId = parseInt(itemId as string);
   const isFavorite = isItemFavorite(restId, itmId);
 
-  // All available items database
-  const allItems = [
-    {
-      id: 101,
-      restaurantId: 1,
-      restaurantName: 'Delhi Darbar Restaurant',
-      name: 'Chicken Biryani',
-      description: 'Aromatic basmati rice cooked with tender chicken pieces, infused with traditional spices and saffron. Served with raita and gravy.',
-      price: 249,
-      image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800',
-      isVeg: false,
-      rating: 4.5,
-      category: 'Biryani',
-      servings: 'Serves 1',
-      prepTime: '25-30 mins',
-    },
-    {
-      id: 102,
-      restaurantId: 2,
-      restaurantName: 'Wow! Momo',
-      name: 'Veg Steamed Momos',
-      description: 'Fresh vegetables wrapped in soft dumplings, steamed to perfection. Served with spicy red chutney and mayonnaise.',
-      price: 129,
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800',
-      isVeg: true,
-      rating: 4.4,
-      category: 'Momos',
-      servings: '8 pieces',
-      prepTime: '15-20 mins',
-    },
-    {
-      id: 103,
-      restaurantId: 3,
-      restaurantName: 'Pizza Paradise',
-      name: 'Margherita Pizza',
-      description: 'Classic Italian pizza with fresh mozzarella, tomato sauce, and basil leaves on a crispy thin crust.',
-      price: 299,
-      image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800',
-      isVeg: true,
-      rating: 4.6,
-      category: 'Pizza',
-      servings: 'Serves 1-2',
-      prepTime: '20-25 mins',
-    },
-    {
-      id: 104,
-      restaurantId: 1,
-      restaurantName: 'Delhi Darbar Restaurant',
-      name: 'Paneer Butter Masala',
-      description: 'Cottage cheese cubes cooked in rich, creamy tomato gravy with butter and aromatic spices. Best enjoyed with naan or rice.',
-      price: 219,
-      image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800',
-      isVeg: true,
-      rating: 4.3,
-      category: 'Curry',
-      servings: 'Serves 1-2',
-      prepTime: '20-25 mins',
-    },
-    {
-      id: 105,
-      restaurantId: 6,
-      restaurantName: 'Noodle House',
-      name: 'Hakka Noodles',
-      description: 'Stir-fried noodles with fresh vegetables, tossed in aromatic sauces and seasonings.',
-      price: 179,
-      image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
-      isVeg: true,
-      rating: 4.2,
-      category: 'Noodles',
-      servings: 'Serves 1',
-      prepTime: '15-20 mins',
-    },
-    {
-      id: 106,
-      restaurantId: 5,
-      restaurantName: 'Sweet Cravings Bakery',
-      name: 'Chocolate Cake',
-      description: 'Rich chocolate cake with layers of chocolate ganache, topped with chocolate shavings.',
-      price: 349,
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800',
-      isVeg: true,
-      rating: 4.7,
-      category: 'Dessert',
-      servings: '2-3 slices',
-      prepTime: '10-15 mins',
-    },
-  ];
-
-  const item = allItems.find(i => i.id === itmId && i.restaurantId === restId);
+  // Get item from centralized data source
+  const item = getMenuItemById(restId, itmId);
 
   if (!item) {
     return (
@@ -136,7 +50,7 @@ export default function ItemDetailScreen() {
       addItemToFavorites({
         id: item.id,
         restaurantId: item.restaurantId,
-        restaurantName: item.restaurantName,
+        restaurantName: getRestaurantName(item.restaurantId) || 'Unknown Restaurant',
         itemName: item.name,
         description: item.description,
         price: item.price,
@@ -198,7 +112,7 @@ export default function ItemDetailScreen() {
             </View>
             <View style={styles.itemTitleSection}>
               <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.restaurantName}>{item.restaurantName}</Text>
+              <Text style={styles.restaurantName}>{getRestaurantName(item.restaurantId)}</Text>
             </View>
           </View>
 

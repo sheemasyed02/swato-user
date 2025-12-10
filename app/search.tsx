@@ -1,3 +1,4 @@
+import { restaurants } from '@/data/restaurants';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -24,25 +25,6 @@ export default function SearchScreen() {
     'Rolls',
     'Cake',
     'Ice Cream',
-  ];
-
-  const restaurants = [
-    {
-      id: 1,
-      name: 'Delhi Darbar',
-      cuisine: 'North Indian, Biryani',
-      rating: 4.3,
-      time: '25-30 mins',
-      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400',
-    },
-    {
-      id: 2,
-      name: 'Wow! Momo',
-      cuisine: 'Chinese, Tibetan',
-      rating: 4.2,
-      time: '20-25 mins',
-      image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400',
-    },
   ];
 
   return (
@@ -106,7 +88,7 @@ export default function SearchScreen() {
               <Text style={styles.cuisine}>{item.cuisine}</Text>
               <View style={styles.metaInfo}>
                 <Text style={styles.rating}>★ {item.rating}</Text>
-                <Text style={styles.time}>• {item.time}</Text>
+                <Text style={styles.time}>• {item.deliveryTime}</Text>
               </View>
             </View>
           </TouchableOpacity>
