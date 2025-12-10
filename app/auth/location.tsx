@@ -1,5 +1,3 @@
-import { Colors } from '@/constants/colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -7,6 +5,7 @@ import {
     Alert,
     Image,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -43,76 +42,69 @@ export default function LocationScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.swato.primary, Colors.swato.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <View style={styles.logoContainer}>
-          <View style={styles.logoGlow} />
-          <View style={styles.logoWrapper}>
-            <Image 
-              source={require('@/assets/images/icon.png')} 
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+      {/* Orange Header */}
+      <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <Image
+            source={require('@/assets/images/2.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
-        <Text style={styles.headerTitle}>Location Access</Text>
-        <Text style={styles.headerSubtitle}>Help us serve you better</Text>
-      </LinearGradient>
+        <Text style={styles.tagline}>One app for food, grocery, dining &</Text>
+        <Text style={styles.tagline}>more in minutes!</Text>
+      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.card}>
-          <View style={styles.iconContainer}>
-            <View style={styles.iconCircle}>
-              <Text style={styles.iconText}>📍</Text>
+      {/* Content Section */}
+      <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formSection}>
+            <Text style={styles.title}>Select Your Location</Text>
+            
+            <View style={styles.iconContainer}>
+              <Text style={styles.icon}>📍</Text>
+            </View>
+
+            <Text style={styles.description}>
+              Allow Swato to access this device's location?
+            </Text>
+
+            <View style={styles.features}>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Find nearby restaurants</Text>
+              </View>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Accurate delivery tracking</Text>
+              </View>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Faster order placement</Text>
+              </View>
             </View>
           </View>
+        </ScrollView>
 
-          <Text style={styles.cardTitle}>Enable Location</Text>
-          <Text style={styles.cardDescription}>
-            We need your location to show you the best restaurants and food options near you
-          </Text>
-
-          <View style={styles.features}>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Find nearby restaurants</Text>
-            </View>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Accurate delivery tracking</Text>
-            </View>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Faster order placement</Text>
-            </View>
-          </View>
-
+        {/* Buttons at bottom */}
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.enableButton}
+            style={[styles.enableButton, isLoading && styles.enableButtonDisabled]}
             onPress={handleEnableLocation}
             disabled={isLoading}
           >
-            <LinearGradient
-              colors={[Colors.swato.primary, Colors.swato.primaryLight]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.enableButtonText}>
-                {isLoading ? 'Getting location...' : 'Enable Location'}
-              </Text>
-            </LinearGradient>
+            <Text style={styles.enableButtonText}>
+              {isLoading ? 'Getting location...' : 'While using the app'}
+            </Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.skipButton}
             onPress={() => router.push('/auth/notification' as any)}
           >
-            <Text style={styles.skipButtonText}>Skip for now</Text>
+            <Text style={styles.skipButtonText}>Don't allow</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -123,132 +115,105 @@ export default function LocationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 40,
+    backgroundColor: '#FF5200',
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  logoContainer: {
+  logoRow: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  logoGlow: {
-    position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    top: '50%',
-    left: '50%',
-    marginLeft: -45,
-    marginTop: -45,
-  },
-  logoWrapper: {
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+    marginBottom: 10,
   },
   logo: {
     width: 60,
     height: 60,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 15,
   },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
+  tagline: {
     color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
   },
-  formContainer: {
+  content: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#F5F5F5',
   },
-  card: {
+  scrollContent: {
+    flexGrow: 1,
+  },
+  formSection: {
+    padding: 24,
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    flex: 1,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 24,
   },
   iconContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginVertical: 32,
   },
-  iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#FFF5F0',
-    justifyContent: 'center',
-    alignItems: 'center',
+  icon: {
+    fontSize: 80,
   },
-  iconText: {
-    fontSize: 36,
-  },
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  description: {
+    fontSize: 18,
+    fontWeight: '600',
     color: '#1A1A1A',
     textAlign: 'center',
-    marginBottom: 12,
-  },
-  cardDescription: {
-    fontSize: 15,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 28,
+    marginBottom: 32,
   },
   features: {
-    marginBottom: 28,
+    marginBottom: 24,
   },
   feature: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
-  featureDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#FF6B35',
+  featureIcon: {
+    fontSize: 20,
+    color: '#FF5200',
     marginRight: 12,
+    fontWeight: 'bold',
   },
   featureText: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#333',
-    fontWeight: '500',
+  },
+  buttonContainer: {
+    padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+    gap: 12,
   },
   enableButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginBottom: 16,
-    shadowColor: '#FF6B35',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  buttonGradient: {
-    paddingVertical: 18,
+    backgroundColor: '#4A90E2',
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
+  },
+  enableButtonDisabled: {
+    opacity: 0.6,
   },
   enableButtonText: {
     color: '#FFFFFF',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   skipButton: {
@@ -256,8 +221,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButtonText: {
-    color: '#999',
-    fontSize: 15,
-    fontWeight: '500',
+    color: '#4A90E2',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

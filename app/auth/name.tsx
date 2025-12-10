@@ -1,19 +1,16 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
     Image,
     KeyboardAvoidingView,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
-
-const { width } = Dimensions.get('window');
 
 export default function NameScreen() {
   const router = useRouter();
@@ -31,57 +28,60 @@ export default function NameScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header Section */}
-      <LinearGradient
-        colors={['#FF6B35', '#FF8559']}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
-        <View style={styles.logoContainer}>
-          <View style={styles.logoGlow} />
-          <View style={styles.logoWrapper}>
-            <Image
-              source={require('@/assets/images/2.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      {/* Orange Header */}
+      <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <Image
+            source={require('@/assets/images/2.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
-        <Text style={styles.headerTitle}>What's your name?</Text>
-        <Text style={styles.headerSubtitle}>Let us know how to address you</Text>
-      </LinearGradient>
+        <Text style={styles.tagline}>One app for food, grocery, dining &</Text>
+        <Text style={styles.tagline}>more in minutes!</Text>
+      </View>
 
-      {/* Form Section */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.formContainer}
-      >
-        <View style={styles.card}>
-          <Text style={styles.label}>Full Name</Text>
-          <View style={[
-            styles.inputWrapper,
-            isFocused && styles.inputWrapperFocused
-          ]}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your full name"
-              placeholderTextColor="#999"
-              value={name}
-              onChangeText={setName}
-              autoFocus
-              autoCapitalize="words"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-            {name.length > 0 && (
-              <TouchableOpacity style={styles.clearButton} onPress={clearName}>
-                <View style={styles.clearIcon} />
-              </TouchableOpacity>
-            )}
+      {/* Content Section */}
+      <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formSection}>
+            <Text style={styles.title}>What's your name?</Text>
+            
+            <Text style={styles.label}>Enter Full Name</Text>
+            <View style={[
+              styles.inputWrapper,
+              isFocused && styles.inputWrapperFocused
+            ]}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your name"
+                placeholderTextColor="#999"
+                value={name}
+                onChangeText={setName}
+                autoFocus
+                autoCapitalize="words"
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+              {name.length > 0 && (
+                <TouchableOpacity style={styles.clearButton} onPress={clearName}>
+                  <Text style={styles.clearIcon}>✕</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+        </ScrollView>
 
+        {/* Button fixed at bottom */}
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[
               styles.continueButton,
@@ -90,112 +90,88 @@ export default function NameScreen() {
             onPress={handleContinue}
             disabled={name.trim().length < 2}
           >
-            <LinearGradient
-              colors={name.trim().length >= 2 ? ['#FF6B35', '#FF8559'] : ['#E0E0E0', '#E0E0E0']}
-              style={styles.buttonGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <Text style={[
-                styles.continueButtonText,
-                name.trim().length >= 2 && styles.continueButtonTextActive
-              ]}>Continue</Text>
-            </LinearGradient>
+            <Text style={styles.continueButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 40,
+    backgroundColor: '#FF5200',
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  logoContainer: {
+  logoRow: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  logoGlow: {
-    position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    top: '50%',
-    left: '50%',
-    marginLeft: -45,
-    marginTop: -45,
-  },
-  logoWrapper: {
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+    marginBottom: 10,
   },
   logo: {
     width: 60,
     height: 60,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 15,
   },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
+  tagline: {
     color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  formSection: {
+    padding: 24,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
     marginBottom: 8,
   },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-  },
-  formContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 24,
   },
   label: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#1A1A1A',
+    color: '#FF5200',
     marginBottom: 12,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#E0E0E0',
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    backgroundColor: '#F8F9FA',
-    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#FF5200',
+    borderRadius: 28,
+    paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+    height: 56,
   },
   inputWrapperFocused: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
+    borderColor: '#FF5200',
   },
   input: {
     flex: 1,
-    paddingVertical: 18,
-    fontSize: 16,
+    paddingVertical: 16,
+    fontSize: 18,
     color: '#1A1A1A',
     fontWeight: '500',
   },
@@ -208,32 +184,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   clearIcon: {
-    width: 12,
-    height: 2,
-    backgroundColor: '#666',
-    borderRadius: 1,
+    fontSize: 14,
+    color: '#666',
+  },
+  buttonContainer: {
+    padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
   },
   continueButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  continueButtonActive: {
-    shadowColor: '#FF6B35',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  buttonGradient: {
-    paddingVertical: 18,
+    backgroundColor: '#CCCCCC',
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
   },
-  continueButtonText: {
-    color: '#999',
-    fontSize: 17,
-    fontWeight: 'bold',
+  continueButtonActive: {
+    backgroundColor: '#FF5200',
   },
-  continueButtonTextActive: {
+  continueButtonText: {
     color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

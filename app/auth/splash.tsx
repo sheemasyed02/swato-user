@@ -169,11 +169,15 @@ const styles = StyleSheet.create({
     marginTop: -90,
   },
   logoWrapper: {
-    width: 160,
-    height: 160,
+    width: 140,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 30,
   },
   logo: {
     width: '100%',

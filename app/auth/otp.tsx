@@ -1,11 +1,10 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Dimensions,
     Image,
     KeyboardAvoidingView,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -13,7 +12,6 @@ import {
     View,
 } from 'react-native';
 
-const { width } = Dimensions.get('window');
 const OTP_LENGTH = 6;
 
 export default function OTPScreen() {
@@ -79,168 +77,159 @@ export default function OTPScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header Section */}
-      <LinearGradient
-        colors={['#FF6B35', '#FF8559']}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
-        <View style={styles.logoContainer}>
-          <View style={styles.logoGlow} />
-          <View style={styles.logoWrapper}>
-            <Image
-              source={require('@/assets/images/2.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      {/* Orange Header */}
+      <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <Image
+            source={require('@/assets/images/2.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
-        <Text style={styles.headerTitle}>Verification Code</Text>
-        <Text style={styles.headerSubtitle}>We've sent a code to your mobile</Text>
-      </LinearGradient>
+        <Text style={styles.tagline}>One app for food, grocery, dining &</Text>
+        <Text style={styles.tagline}>more in minutes!</Text>
+      </View>
 
-      {/* OTP Form Section */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.formContainer}
-      >
-        <View style={styles.card}>
-          <View style={styles.phoneInfo}>
-            <Text style={styles.phoneText}>+91 8309691054</Text>
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.changeText}>Change</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* OTP Input */}
-          <View style={styles.otpContainer}>
-            {otp.map((digit, index) => (
-              <TextInput
-                key={index}
-                ref={(ref) => { inputRefs.current[index] = ref; }}
-                style={[
-                  styles.otpInput,
-                  digit && styles.otpInputFilled,
-                ]}
-                value={digit}
-                onChangeText={(value) => handleOtpChange(value, index)}
-                onKeyPress={(e) => handleKeyPress(e, index)}
-                keyboardType="number-pad"
-                maxLength={1}
-                selectTextOnFocus
-              />
-            ))}
-          </View>
-
-          {/* Timer */}
-          <View style={styles.timerContainer}>
-            {!canResend ? (
-              <Text style={styles.timerText}>
-                Resend code in <Text style={styles.timerValue}>{formatTime(timer)}</Text>
-              </Text>
-            ) : (
-              <TouchableOpacity onPress={() => handleResend('sms')}>
-                <Text style={styles.resendLink}>Resend Code</Text>
+      {/* Content Section */}
+      <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formSection}>
+            <Text style={styles.title}>Enter verification code</Text>
+            <View style={styles.subtitleRow}>
+              <Text style={styles.subtitle}>Sent to +91 8309691054</Text>
+              <TouchableOpacity onPress={() => router.back()}>
+                <Text style={styles.editLink}>✏️</Text>
               </TouchableOpacity>
-            )}
+            </View>
+
+            <View style={styles.otpContainer}>
+              {otp.map((digit, index) => (
+                <TextInput
+                  key={index}
+                  ref={(ref) => { inputRefs.current[index] = ref; }}
+                  style={[styles.otpInput, digit && styles.otpInputFilled, index === 0 && styles.otpInputFirst]}
+                  value={digit}
+                  onChangeText={(value) => handleOtpChange(value, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  selectTextOnFocus
+                />
+              ))}
+            </View>
+
+            <View style={styles.resendSection}>
+              <Text style={styles.resendText}>
+                Get verification code again in <Text style={styles.timer}>{formatTime(timer)}</Text>
+              </Text>
+              <View style={styles.resendButtons}>
+                <TouchableOpacity
+                  style={[styles.resendButton, !canResend && styles.resendButtonDisabled]}
+                  onPress={() => handleResend('sms')}
+                  disabled={!canResend}
+                >
+                  <Text style={[styles.resendButtonText, !canResend && styles.resendButtonTextDisabled]}>
+                    Get via SMS
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.resendButton, !canResend && styles.resendButtonDisabled]}
+                  onPress={() => handleResend('call')}
+                  disabled={!canResend}
+                >
+                  <Text style={[styles.resendButtonText, !canResend && styles.resendButtonTextDisabled]}>
+                    Get via Call
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 40,
+    backgroundColor: '#FF5200',
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  logoContainer: {
+  logoRow: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  logoGlow: {
-    position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    top: '50%',
-    left: '50%',
-    marginLeft: -45,
-    marginTop: -45,
-  },
-  logoWrapper: {
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+    marginBottom: 10,
   },
   logo: {
     width: 60,
     height: 60,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 15,
   },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
+  tagline: {
     color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  formSection: {
+    padding: 24,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
     marginBottom: 8,
   },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-  },
-  formContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  phoneInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 32,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  phoneText: {
-    fontSize: 16,
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
     color: '#1A1A1A',
-    fontWeight: '600',
+    marginBottom: 12,
   },
-  changeText: {
-    fontSize: 15,
-    color: '#FF6B35',
-    fontWeight: '600',
+  subtitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+  editLink: {
+    fontSize: 18,
   },
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 32,
+    gap: 8,
   },
   otpInput: {
-    width: (width - 120) / OTP_LENGTH,
+    flex: 1,
     height: 56,
     borderWidth: 1.5,
     borderColor: '#E0E0E0',
@@ -251,25 +240,46 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
     backgroundColor: '#F8F9FA',
   },
+  otpInputFirst: {
+    marginLeft: 0,
+  },
   otpInputFilled: {
-    borderColor: '#FF6B35',
+    borderColor: '#FF5200',
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
   },
-  timerContainer: {
+  resendSection: {
     alignItems: 'center',
   },
-  timerText: {
+  resendText: {
     fontSize: 14,
     color: '#666',
+    marginBottom: 16,
   },
-  timerValue: {
-    color: '#FF6B35',
+  timer: {
+    color: '#FF5200',
     fontWeight: '700',
   },
-  resendLink: {
-    fontSize: 15,
-    color: '#FF6B35',
+  resendButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  resendButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#FF5200',
+    borderRadius: 8,
+  },
+  resendButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+  },
+  resendButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
     fontWeight: '600',
   },
+  resendButtonTextDisabled: {
+    color: '#999999',
+  },
 });
+

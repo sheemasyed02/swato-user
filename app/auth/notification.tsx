@@ -1,11 +1,10 @@
-import { Colors } from '@/constants/colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Image,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -36,76 +35,73 @@ export default function NotificationScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.swato.primary, Colors.swato.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <View style={styles.logoContainer}>
-          <View style={styles.logoGlow} />
-          <View style={styles.logoWrapper}>
-            <Image 
-              source={require('@/assets/images/icon.png')} 
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+      {/* Orange Header */}
+      <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <Image
+            source={require('@/assets/images/2.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
-        <Text style={styles.headerTitle}>Stay Updated</Text>
-        <Text style={styles.headerSubtitle}>Get real-time order updates</Text>
-      </LinearGradient>
+        <Text style={styles.tagline}>One app for food, grocery, dining &</Text>
+        <Text style={styles.tagline}>more in minutes!</Text>
+      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.card}>
-          <View style={styles.iconContainer}>
-            <View style={styles.iconCircle}>
-              <Text style={styles.iconText}>🔔</Text>
+      {/* Content Section */}
+      <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formSection}>
+            <Text style={styles.title}>Get updates on your order status</Text>
+            
+            <Text style={styles.description}>
+              Allow push notifications to get real-time updates on your order status.
+            </Text>
+
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/2.png')}
+                style={styles.illustrationImage}
+                resizeMode="contain"
+              />
+            </View>
+
+            <View style={styles.features}>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Order status updates</Text>
+              </View>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Delivery tracking</Text>
+              </View>
+              <View style={styles.feature}>
+                <Text style={styles.featureIcon}>•</Text>
+                <Text style={styles.featureText}>Exclusive offers</Text>
+              </View>
             </View>
           </View>
+        </ScrollView>
 
-          <Text style={styles.cardTitle}>Enable Notifications</Text>
-          <Text style={styles.cardDescription}>
-            Allow push notifications to get real-time updates on your order status and special offers
-          </Text>
-
-          <View style={styles.features}>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Order status updates</Text>
-            </View>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Delivery tracking</Text>
-            </View>
-            <View style={styles.feature}>
-              <View style={styles.featureDot} />
-              <Text style={styles.featureText}>Exclusive offers</Text>
-            </View>
-          </View>
-
+        {/* Buttons at bottom */}
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.enableButton}
+            style={[styles.enableButton, isLoading && styles.enableButtonDisabled]}
             onPress={handleEnableNotification}
             disabled={isLoading}
           >
-            <LinearGradient
-              colors={[Colors.swato.primary, Colors.swato.primaryLight]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.enableButtonText}>
-                {isLoading ? 'Setting up...' : 'Enable Notifications'}
-              </Text>
-            </LinearGradient>
+            <Text style={styles.enableButtonText}>
+              {isLoading ? 'Setting up...' : 'Turn on Notification'}
+            </Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.skipButton}
             onPress={() => router.replace('/(tabs)')}
           >
-            <Text style={styles.skipButtonText}>Skip for now</Text>
+            <Text style={styles.skipButtonText}>Not Now</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -116,132 +112,104 @@ export default function NotificationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FFFFFF',
   },
   header: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 40,
+    backgroundColor: '#FF5200',
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    paddingBottom: 20,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  logoContainer: {
+  logoRow: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  logoGlow: {
-    position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    top: '50%',
-    left: '50%',
-    marginLeft: -45,
-    marginTop: -45,
-  },
-  logoWrapper: {
-    width: 70,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+    marginBottom: 10,
   },
   logo: {
     width: 60,
     height: 60,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 15,
   },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
+  tagline: {
     color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
   },
-  formContainer: {
+  content: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#F5F5F5',
   },
-  card: {
+  scrollContent: {
+    flexGrow: 1,
+  },
+  formSection: {
+    padding: 24,
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    flex: 1,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 16,
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 32,
   },
   iconContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginVertical: 32,
   },
-  iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#FFF5F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconText: {
-    fontSize: 36,
-  },
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1A1A1A',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  cardDescription: {
-    fontSize: 15,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 28,
+  illustrationImage: {
+    width: 200,
+    height: 200,
   },
   features: {
-    marginBottom: 28,
+    marginBottom: 24,
   },
   feature: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
-  featureDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#FF6B35',
+  featureIcon: {
+    fontSize: 20,
+    color: '#FF5200',
     marginRight: 12,
+    fontWeight: 'bold',
   },
   featureText: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#333',
-    fontWeight: '500',
+  },
+  buttonContainer: {
+    padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+    gap: 12,
   },
   enableButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginBottom: 16,
-    shadowColor: '#FF6B35',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  buttonGradient: {
-    paddingVertical: 18,
+    backgroundColor: '#FF5200',
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
+  },
+  enableButtonDisabled: {
+    opacity: 0.6,
   },
   enableButtonText: {
     color: '#FFFFFF',
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   skipButton: {
@@ -249,8 +217,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButtonText: {
-    color: '#999',
-    fontSize: 15,
-    fontWeight: '500',
+    color: '#FF5200',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
