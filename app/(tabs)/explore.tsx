@@ -1,15 +1,18 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function AccountScreen() {
+  const router = useRouter();
+  const customerName = 'Sheema Syed'; // This should come from user data/state
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -21,10 +24,10 @@ export default function AccountScreen() {
         {/* Profile Section */}
         <View style={styles.profileSection}>
           <View style={styles.profileCircle}>
-            <Text style={styles.profileText}>U</Text>
+            <Text style={styles.profileText}>{customerName.charAt(0)}</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>User</Text>
+            <Text style={styles.profileName}>{customerName}</Text>
             <Text style={styles.profilePhone}>+91 8309691054</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
@@ -32,35 +35,23 @@ export default function AccountScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Swato One */}
-        <TouchableOpacity style={styles.oneCard}>
-          <View style={styles.oneIcon}>
-            <Image
-              source={require('@/assets/images/2.png')}
-              style={styles.oneLogo}
-              resizeMode="contain"
-            />
-          </View>
-          <View style={styles.oneInfo}>
-            <Text style={styles.oneTitle}>Swato One</Text>
-            <Text style={styles.oneSubtitle}>Get exclusive benefits</Text>
-          </View>
-          <Text style={styles.arrow}>›</Text>
-        </TouchableOpacity>
-
         {/* Menu Items */}
         <View style={styles.menuSection}>
           <Text style={styles.menuHeader}>Food Orders</Text>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.orderIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/orders')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.orderIcon}>
+                <View style={styles.orderIconBox} />
+              </View>
             </View>
             <Text style={styles.menuText}>Your orders</Text>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.favoriteIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/favorites')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.favoriteIcon}>
+                <View style={styles.heartShape} />
+              </View>
             </View>
             <Text style={styles.menuText}>Favorite</Text>
             <Text style={styles.arrow}>›</Text>
@@ -69,30 +60,47 @@ export default function AccountScreen() {
 
         <View style={styles.menuSection}>
           <Text style={styles.menuHeader}>More</Text>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.paymentIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/payments')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.paymentIcon}>
+                <View style={styles.cardShape} />
+              </View>
             </View>
             <Text style={styles.menuText}>Payments & Refunds</Text>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.addressIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/addresses')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.addressIcon}>
+                <View style={styles.pinShape} />
+              </View>
             </View>
             <Text style={styles.menuText}>Addresses</Text>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.settingsIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/settings')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.settingsIcon}>
+                <View style={styles.gearShape} />
+              </View>
             </View>
             <Text style={styles.menuText}>Settings</Text>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={styles.menuIcon}>
-              <View style={styles.helpIcon} />
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/feedback')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.feedbackIcon}>
+                <View style={styles.starShape} />
+              </View>
+            </View>
+            <Text style={styles.menuText}>Feedback</Text>
+            <Text style={styles.arrow}>›</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/help')}>
+            <View style={styles.menuIconContainer}>
+              <View style={styles.helpIcon}>
+                <View style={styles.questionShape} />
+              </View>
             </View>
             <Text style={styles.menuText}>Help</Text>
             <Text style={styles.arrow}>›</Text>
@@ -119,7 +127,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#FF6B35',
-    paddingTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingTop: Platform.OS === 'ios' ? 55 : 30,
     paddingBottom: 16,
     paddingHorizontal: 16,
   },
@@ -235,50 +243,115 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  menuIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#FFF3EE',
+  menuIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   orderIcon: {
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFE8DC',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderIconBox: {
+    width: 18,
+    height: 18,
+    borderWidth: 2,
+    borderColor: '#FF6B35',
     borderRadius: 4,
-    backgroundColor: '#FF6B35',
   },
   favoriteIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FEE2E2',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heartShape: {
+    width: 18,
+    height: 18,
     backgroundColor: '#EF4444',
+    borderRadius: 9,
+    transform: [{ rotate: '45deg' }],
   },
   paymentIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#DBEAFE',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardShape: {
     width: 20,
     height: 14,
-    borderRadius: 3,
     backgroundColor: '#3B82F6',
+    borderRadius: 3,
   },
   addressIcon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFE8DC',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pinShape: {
+    width: 14,
+    height: 14,
     backgroundColor: '#FF6B35',
+    borderRadius: 7,
   },
   settingsIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gearShape: {
+    width: 18,
+    height: 18,
     backgroundColor: '#6B7280',
+    borderRadius: 9,
+  },
+  feedbackIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FEF3C7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  starShape: {
+    width: 18,
+    height: 18,
+    backgroundColor: '#F59E0B',
+    borderRadius: 3,
+    transform: [{ rotate: '45deg' }],
   },
   helpIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#10B981',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#D1FAE5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  questionShape: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: '#10B981',
   },
   menuText: {
     flex: 1,
