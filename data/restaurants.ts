@@ -8,6 +8,7 @@ export interface Restaurant {
   image: string;
   offer: string;
   isVeg: boolean;
+  isOpen?: boolean; // For showing unavailable/closed state
 }
 
 export interface MenuItem {
@@ -90,6 +91,7 @@ export const restaurants: Restaurant[] = [
     image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=800',
     offer: 'FREE DELIVERY',
     isVeg: true,
+    isOpen: false, // Currently closed
   },
   {
     id: 7,
@@ -112,6 +114,7 @@ export const restaurants: Restaurant[] = [
     image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800',
     offer: '₹100 OFF',
     isVeg: false,
+    isOpen: false, // Currently closed
   },
 ];
 

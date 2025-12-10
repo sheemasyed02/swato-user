@@ -29,20 +29,20 @@ export default function HomeScreen() {
   const popularItems = getPopularItems(6);
 
   const categories = [
-    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200', available: true },
-    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200', available: true },
-    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200', available: true },
-    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200', available: true },
-    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200', available: true },
-    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200', available: false },
-    { id: 7, name: 'Juice', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200', available: true },
-    { id: 8, name: 'Cake', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200', available: true },
-    { id: 9, name: 'Noodles', image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=200', available: false },
-    { id: 10, name: 'Salad', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200', available: true },
-    { id: 11, name: 'Pasta', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200', available: true },
-    { id: 12, name: 'Sandwich', image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=200', available: false },
-    { id: 13, name: 'Ice Cream', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=200', available: true },
-    { id: 14, name: 'Sushi', image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=200', available: false },
+    { id: 1, name: 'Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200' },
+    { id: 2, name: 'Pizza', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200' },
+    { id: 3, name: 'Burger', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200' },
+    { id: 4, name: 'Chinese', image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=200' },
+    { id: 5, name: 'Momos', image: 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200' },
+    { id: 6, name: 'Rolls', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200' },
+    { id: 7, name: 'Juice', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=200' },
+    { id: 8, name: 'Cake', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200' },
+    { id: 9, name: 'Noodles', image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?w=200' },
+    { id: 10, name: 'Salad', image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200' },
+    { id: 11, name: 'Pasta', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=200' },
+    { id: 12, name: 'Sandwich', image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=200' },
+    { id: 13, name: 'Ice Cream', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=200' },
+    { id: 14, name: 'Sushi', image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=200' },
   ];
 
   const offers = [
@@ -250,21 +250,15 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={category.id}
                 style={styles.categoryItem}
-                onPress={() => category.available && console.log('Category:', category.name)}
-                disabled={!category.available}
+                onPress={() => router.push(`/category/${category.name}` as any)}
               >
-                <View style={[styles.categoryCircle, !category.available && styles.categoryUnavailable]}>
+                <View style={styles.categoryCircle}>
                   <Image 
                     source={{ uri: category.image }} 
-                    style={[styles.categoryImage, !category.available && styles.imageGrayscale]} 
+                    style={styles.categoryImage} 
                   />
-                  {!category.available && (
-                    <View style={styles.unavailableOverlay}>
-                      <Text style={styles.unavailableText}>Soon</Text>
-                    </View>
-                  )}
                 </View>
-                <Text style={[styles.categoryName, !category.available && styles.categoryNameUnavailable]}>{category.name}</Text>
+                <Text style={styles.categoryName}>{category.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -283,12 +277,25 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={restaurant.id}
                 style={styles.restaurantCard}
-                onPress={() => router.push(`/restaurant/${restaurant.id}` as any)}
+                onPress={() => restaurant.isOpen !== false && router.push(`/restaurant/${restaurant.id}` as any)}
+                disabled={restaurant.isOpen === false}
               >
-                <Image source={{ uri: restaurant.image }} style={styles.restaurantImage} />
-                <View style={styles.restaurantOverlay}>
-                  <Text style={styles.restaurantOffer}>{restaurant.offer}</Text>
+                <View style={restaurant.isOpen === false && styles.grayscaleContainer}>
+                  <Image 
+                    source={{ uri: restaurant.image }} 
+                    style={styles.restaurantImage} 
+                  />
+                  {restaurant.isOpen === false && (
+                    <View style={styles.closedOverlay}>
+                      <Text style={styles.closedText}>CURRENTLY CLOSED</Text>
+                    </View>
+                  )}
                 </View>
+                {restaurant.isOpen !== false && (
+                  <View style={styles.restaurantOverlay}>
+                    <Text style={styles.restaurantOffer}>{restaurant.offer}</Text>
+                  </View>
+                )}
                 <View style={styles.vegBadge}>
                   <Ionicons 
                     name="radio-button-on" 
@@ -297,14 +304,30 @@ export default function HomeScreen() {
                   />
                 </View>
                 <View style={styles.restaurantDetails}>
-                  <Text style={styles.restaurantName} numberOfLines={1}>{restaurant.name}</Text>
+                  <Text 
+                    style={[
+                      styles.restaurantName,
+                      restaurant.isOpen === false && styles.restaurantNameClosed
+                    ]} 
+                    numberOfLines={1}
+                  >
+                    {restaurant.name}
+                  </Text>
                   <View style={styles.restaurantInfo}>
                     <View style={styles.ratingBadge}>
                       <Text style={styles.ratingText}>★ {restaurant.rating}</Text>
                     </View>
                     <Text style={styles.deliveryTime}>• {restaurant.deliveryTime}</Text>
                   </View>
-                  <Text style={styles.cuisine} numberOfLines={1}>{restaurant.cuisine}</Text>
+                  <Text 
+                    style={[
+                      styles.cuisine,
+                      restaurant.isOpen === false && styles.cuisineClosed
+                    ]} 
+                    numberOfLines={1}
+                  >
+                    {restaurant.cuisine}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -391,15 +414,35 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={`all-${restaurant.id}`}
                 style={styles.fullRestaurantCard}
-                onPress={() => router.push(`/restaurant/${restaurant.id}` as any)}
+                onPress={() => restaurant.isOpen !== false && router.push(`/restaurant/${restaurant.id}` as any)}
+                disabled={restaurant.isOpen === false}
               >
-                <Image source={{ uri: restaurant.image }} style={styles.fullRestaurantImage} />
-                <View style={styles.fullRestaurantOverlay}>
-                  <Text style={styles.fullRestaurantOffer}>{restaurant.offer}</Text>
+                <View style={restaurant.isOpen === false && styles.grayscaleContainer}>
+                  <Image 
+                    source={{ uri: restaurant.image }} 
+                    style={styles.fullRestaurantImage} 
+                  />
+                  {restaurant.isOpen === false && (
+                    <View style={styles.fullClosedOverlay}>
+                      <Text style={styles.closedText}>CLOSED</Text>
+                    </View>
+                  )}
                 </View>
+                {restaurant.isOpen !== false && (
+                  <View style={styles.fullRestaurantOverlay}>
+                    <Text style={styles.fullRestaurantOffer}>{restaurant.offer}</Text>
+                  </View>
+                )}
                 <View style={styles.fullRestaurantInfo}>
                   <View style={styles.fullRestaurantHeader}>
-                    <Text style={styles.fullRestaurantName}>{restaurant.name}</Text>
+                    <Text 
+                      style={[
+                        styles.fullRestaurantName,
+                        restaurant.isOpen === false && styles.restaurantNameClosed
+                      ]}
+                    >
+                      {restaurant.name}
+                    </Text>
                     <Ionicons 
                       name="radio-button-on" 
                       size={14} 
@@ -425,7 +468,11 @@ export default function HomeScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Made with love for Delhi</Text>
+          <View style={styles.footerContent}>
+            <Text style={styles.footerText}>Made with love for </Text>
+            <Text style={styles.footerText}>Delhi </Text>
+            <Ionicons name="heart" size={14} color="#FF6B35" />
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -764,6 +811,35 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     backgroundColor: '#F5F5F5',
   },
+  grayscaleContainer: {
+    opacity: 0.6,
+  },
+  restaurantImageClosed: {
+    width: '100%',
+    height: width * 0.36,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    backgroundColor: '#F5F5F5',
+  },
+  closedOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  closedText: {
+    color: '#666666',
+    fontSize: 12,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+  },
   restaurantOverlay: {
     position: 'absolute',
     bottom: width * 0.36 - 30,
@@ -820,6 +896,12 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
     marginBottom: 6,
   },
+  restaurantNameClosed: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#999999',
+    marginBottom: 6,
+  },
   restaurantInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -845,6 +927,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#999',
   },
+  cuisineClosed: {
+    fontSize: 13,
+    color: '#CCCCCC',
+  },
   allRestaurants: {
     paddingHorizontal: 16,
   },
@@ -864,6 +950,21 @@ const styles = StyleSheet.create({
     width: width * 0.32,
     height: width * 0.32,
     backgroundColor: '#F5F5F5',
+  },
+  fullRestaurantImageClosed: {
+    width: width * 0.32,
+    height: width * 0.32,
+    backgroundColor: '#F5F5F5',
+  },
+  fullClosedOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width * 0.32,
+    height: width * 0.32,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   fullRestaurantOverlay: {
     position: 'absolute',
@@ -943,6 +1044,10 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
+  },
+  footerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   footerText: {
     fontSize: 14,
