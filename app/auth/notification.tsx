@@ -4,11 +4,10 @@ import React, { useState } from 'react';
 import {
     Image,
     Platform,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 export default function NotificationScreen() {
@@ -50,41 +49,21 @@ export default function NotificationScreen() {
 
       {/* Content Section */}
       <View style={styles.content}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.formSection}>
-            <Text style={styles.title}>Get updates on your order status</Text>
-            
-            <Text style={styles.description}>
-              Allow push notifications to get real-time updates on your order status.
-            </Text>
-
-            <View style={styles.iconContainer}>
-              <Image
-                source={require('@/assets/images/2.png')}
-                style={styles.illustrationImage}
-                resizeMode="contain"
-              />
-            </View>
-
-            <View style={styles.features}>
-              <View style={styles.feature}>
-                <Text style={styles.featureIcon}>•</Text>
-                <Text style={styles.featureText}>Order status updates</Text>
-              </View>
-              <View style={styles.feature}>
-                <Text style={styles.featureIcon}>•</Text>
-                <Text style={styles.featureText}>Delivery tracking</Text>
-              </View>
-              <View style={styles.feature}>
-                <Text style={styles.featureIcon}>•</Text>
-                <Text style={styles.featureText}>Exclusive offers</Text>
-              </View>
-            </View>
+        <View style={styles.formSection}>
+          <View style={styles.iconContainer}>
+            <Image
+              source={require('@/assets/images/2.png')}
+              style={styles.illustrationImage}
+              resizeMode="contain"
+            />
           </View>
-        </ScrollView>
+
+          <Text style={styles.title}>Stay updated on your orders!</Text>
+          
+          <Text style={styles.description}>
+            Get real-time notifications about your order status and exclusive offers.
+          </Text>
+        </View>
 
         {/* Buttons at bottom */}
         <View style={styles.buttonContainer}>
@@ -115,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -142,53 +121,35 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  scrollContent: {
-    flexGrow: 1,
+    backgroundColor: '#FFFFFF',
   },
   formSection: {
-    padding: 24,
-    backgroundColor: '#FFFFFF',
     flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  illustrationImage: {
+    width: 140,
+    height: 140,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1A1A1A',
-    marginBottom: 16,
+    marginBottom: 12,
+    textAlign: 'center',
   },
   description: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 32,
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginVertical: 32,
-  },
-  illustrationImage: {
-    width: 200,
-    height: 200,
-  },
-  features: {
-    marginBottom: 24,
-  },
-  feature: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+    textAlign: 'center',
     paddingHorizontal: 20,
-  },
-  featureIcon: {
-    fontSize: 20,
-    color: '#FF5200',
-    marginRight: 12,
-    fontWeight: 'bold',
-  },
-  featureText: {
-    fontSize: 16,
-    color: '#333',
+    lineHeight: 24,
   },
   buttonContainer: {
     padding: 16,
@@ -199,7 +160,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   enableButton: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -217,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButtonText: {
-    color: '#FF5200',
+    color: '#FF6B35',
     fontSize: 16,
     fontWeight: '600',
   },

@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -150,14 +150,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF5200',
+    borderColor: '#FF6B35',
     borderRadius: 28,
     paddingHorizontal: 4,
     backgroundColor: '#FFFFFF',
     height: 56,
   },
   phoneInputWrapperFocused: {
-    borderColor: '#FF5200',
+    borderColor: '#FF6B35',
   },
   countryCodeSection: {
     flexDirection: 'row',
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   continueButtonActive: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
   },
   continueButtonText: {
     color: '#FFFFFF',

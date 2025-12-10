@@ -36,6 +36,15 @@ export default function OTPScreen() {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-navigate when OTP is complete
+  useEffect(() => {
+    if (otp.every((digit) => digit !== '')) {
+      setTimeout(() => {
+        router.push('/auth/name' as any);
+      }, 500);
+    }
+  }, [otp]);
+
   const handleOtpChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return; // Only allow digits
 
@@ -46,11 +55,6 @@ export default function OTPScreen() {
     // Auto-focus next input
     if (value && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-submit when all digits are entered
-    if (newOtp.every((digit) => digit !== '') && index === OTP_LENGTH - 1) {
-      setTimeout(() => handleVerify(), 500);
     }
   };
 
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -244,7 +248,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   otpInputFilled: {
-    borderColor: '#FF5200',
+    borderColor: '#FF6B35',
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
   },
@@ -257,7 +261,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   timer: {
-    color: '#FF5200',
+    color: '#FF6B35',
     fontWeight: '700',
   },
   resendButtons: {
@@ -267,7 +271,7 @@ const styles = StyleSheet.create({
   resendButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     borderRadius: 8,
   },
   resendButtonDisabled: {

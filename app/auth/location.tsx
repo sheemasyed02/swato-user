@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   featureIcon: {
     fontSize: 20,
-    color: '#FF5200',
+    color: '#FF6B35',
     marginRight: 12,
     fontWeight: 'bold',
   },
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   enableButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FF6B35',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButtonText: {
-    color: '#4A90E2',
+    color: '#FF6B35',
     fontSize: 16,
     fontWeight: '600',
   },

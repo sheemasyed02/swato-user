@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   header: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
     paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -152,21 +152,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FF5200',
+    color: '#FF6B35',
     marginBottom: 12,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF5200',
+    borderColor: '#FF6B35',
     borderRadius: 28,
     paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
     height: 56,
   },
   inputWrapperFocused: {
-    borderColor: '#FF5200',
+    borderColor: '#FF6B35',
   },
   input: {
     flex: 1,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   continueButtonActive: {
-    backgroundColor: '#FF5200',
+    backgroundColor: '#FF6B35',
   },
   continueButtonText: {
     color: '#FFFFFF',
