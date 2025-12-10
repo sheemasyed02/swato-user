@@ -287,7 +287,7 @@ export default function HomeScreen() {
                   />
                   {restaurant.isOpen === false && (
                     <View style={styles.closedOverlay}>
-                      <Text style={styles.closedText}>CURRENTLY CLOSED</Text>
+                      <Text style={styles.closedText}>CURRENTLY{"\n"}CLOSED</Text>
                     </View>
                   )}
                 </View>
@@ -424,7 +424,7 @@ export default function HomeScreen() {
                   />
                   {restaurant.isOpen === false && (
                     <View style={styles.fullClosedOverlay}>
-                      <Text style={styles.closedText}>CLOSED</Text>
+                      <Text style={styles.closedText}>CURRENTLY{"\n"}CLOSED</Text>
                     </View>
                   )}
                 </View>
@@ -823,22 +823,20 @@ const styles = StyleSheet.create({
   },
   closedOverlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    bottom: 10,
+    left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
   },
   closedText: {
-    color: '#666666',
-    fontSize: 12,
+    color: '#FFFFFF',
+    fontSize: 11,
     fontWeight: 'bold',
-    letterSpacing: 0.5,
-    textAlign: 'center',
+    letterSpacing: 0.3,
+    textAlign: 'left',
+    lineHeight: 14,
   },
   restaurantOverlay: {
     position: 'absolute',
@@ -958,13 +956,12 @@ const styles = StyleSheet.create({
   },
   fullClosedOverlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: width * 0.32,
-    height: width * 0.32,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    bottom: 8,
+    left: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
   },
   fullRestaurantOverlay: {
     position: 'absolute',
