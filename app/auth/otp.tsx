@@ -36,12 +36,19 @@ export default function OTPScreen() {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-focus first input on mount
+  useEffect(() => {
+    setTimeout(() => {
+      inputRefs.current[0]?.focus();
+    }, 300);
+  }, []);
+
   // Auto-navigate when OTP is complete
   useEffect(() => {
     if (otp.every((digit) => digit !== '')) {
       setTimeout(() => {
         router.push('/auth/name' as any);
-      }, 500);
+      }, 200);
     }
   }, [otp]);
 
@@ -110,7 +117,7 @@ export default function OTPScreen() {
             <View style={styles.subtitleRow}>
               <Text style={styles.subtitle}>Sent to +91 8309691054</Text>
               <TouchableOpacity onPress={() => router.back()}>
-                <Text style={styles.editLink}>✏️</Text>
+                <Text style={styles.editLink}>Change</Text>
               </TouchableOpacity>
             </View>
 
@@ -224,7 +231,9 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   editLink: {
-    fontSize: 18,
+    fontSize: 14,
+    color: '#FF6B35',
+    fontWeight: '600',
   },
   otpContainer: {
     flexDirection: 'row',

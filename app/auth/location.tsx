@@ -65,7 +65,10 @@ export default function LocationScreen() {
             <Text style={styles.title}>Select Your Location</Text>
             
             <View style={styles.iconContainer}>
-              <Text style={styles.icon}>📍</Text>
+              <View style={styles.locationIcon}>
+                <View style={styles.locationPinTop} />
+                <View style={styles.locationPinBottom} />
+              </View>
             </View>
 
             <Text style={styles.description}>
@@ -163,10 +166,32 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: 'center',
-    marginVertical: 32,
+    marginVertical: 24,
   },
-  icon: {
-    fontSize: 80,
+  locationIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFF3EE',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locationPinTop: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FF6B35',
+    marginBottom: 2,
+  },
+  locationPinBottom: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#FF6B35',
   },
   description: {
     fontSize: 18,

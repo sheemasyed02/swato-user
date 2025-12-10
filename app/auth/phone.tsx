@@ -17,6 +17,7 @@ export default function PhoneScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState('+91');
   const [isFocused, setIsFocused] = useState(false);
+  const phoneInputRef = React.useRef<TextInput>(null);
 
   const handleContinue = () => {
     if (phoneNumber.length >= 10) {
@@ -63,6 +64,7 @@ export default function PhoneScreen() {
               </View>
 
               <TextInput
+                ref={phoneInputRef}
                 style={styles.phoneInput}
                 placeholder=""
                 placeholderTextColor="#999"
@@ -70,6 +72,7 @@ export default function PhoneScreen() {
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 maxLength={10}
+                autoFocus
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
               />
